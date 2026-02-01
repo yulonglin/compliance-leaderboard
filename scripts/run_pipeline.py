@@ -15,6 +15,7 @@ def _build_leaderboard(reports: list[dict]) -> pd.DataFrame:
         rows.append(
             {
                 "model": report["model_name"],
+                "model_card_url": report.get("model_card_url"),
                 "eu_code_of_practice_pct": report["cop_percentage"],
                 "stream_pct": report["stream_percentage"],
                 "lab_safety_pct": report["lab_safety_percentage"],
@@ -34,13 +35,18 @@ async def _run_all(model_card_dir: Path, rubric_path: Path) -> list[dict]:
     load_env()
     requirements = load_requirements(rubric_path)
     model_cards = list_model_cards(model_card_dir)
+    sources_path = model_card_dir / "sources.json"
+    sources = {}
+    if sources_path.exists():
+        sources = json.loads(sources_path.read_text())
 
     print(f"Processing {len(model_cards)} models × {len(requirements)} requirements")
 
     reports: list[dict] = []
     for card_path in tqdm(model_cards, desc="Models"):
         model_name = card_path.stem
-        report = await run_pipeline(model_name, card_path, requirements)
+        model_card_url = sources.get(model_name)
+        report = await run_pipeline(model_name, card_path, requirements, model_card_url=model_card_url)
         reports.append(report.model_dump())
     return reports
 

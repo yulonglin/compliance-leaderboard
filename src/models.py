@@ -67,6 +67,7 @@ class RequirementScore(BaseModel):
 class ModelReport(BaseModel):
     model_name: str
     model_card_source: str
+    model_card_url: Optional[str] = None
     scores: list[RequirementScore]
     cop_percentage: float
     stream_percentage: float

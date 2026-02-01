@@ -14,7 +14,14 @@ RESULTS_DIR = PROJECT_ROOT / "results"
 CACHE_DIR = PROJECT_ROOT / ".cache" / "llm"
 VALIDATION_DIR = PROJECT_ROOT / "validation"
 
-STAGE_A_MODEL = os.getenv("STAGE_A_MODEL", "gemini/gemini-2.5-flash")
+_STAGE_A_MODEL_ENV = os.getenv("STAGE_A_MODEL")
+_OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+if _STAGE_A_MODEL_ENV:
+    STAGE_A_MODEL = _STAGE_A_MODEL_ENV
+elif _OPENROUTER_API_KEY:
+    STAGE_A_MODEL = "openrouter/google/gemini-2.5-flash"
+else:
+    STAGE_A_MODEL = "gemini/gemini-2.5-flash"
 STAGE_B_MODEL = os.getenv(
     "STAGE_B_MODEL",
     "anthropic/claude-sonnet-4-5-20250514",

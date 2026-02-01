@@ -29,6 +29,7 @@ def render() -> None:
     df = df.rename(
         columns={
             "model": "Model",
+            "model_card_url": "Model Card",
             "eu_code_of_practice_pct": "EU Code of Practice",
             "stream_pct": "STREAM ChemBio",
             "lab_safety_pct": "Lab Safety",
@@ -40,4 +41,14 @@ def render() -> None:
     style_cols = ["EU Code of Practice", "STREAM ChemBio", "Lab Safety", "Overall"]
     styled = df.style.map(_style_pct, subset=style_cols)
 
-    st.dataframe(styled, width="stretch", hide_index=True)
+    st.dataframe(
+        styled,
+        width="stretch",
+        hide_index=True,
+        column_config={
+            "Model Card": st.column_config.LinkColumn(
+                "Model Card",
+                display_text="Open",
+            ),
+        },
+    )

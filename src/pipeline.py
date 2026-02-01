@@ -32,6 +32,30 @@ class LlmResponseError(RuntimeError):
 _PARA_SPLIT_RE = re.compile(r"\n\s*\n")
 
 
+def _escape_newlines_in_strings(text: str) -> str:
+    output: List[str] = []
+    in_string = False
+    escape = False
+    for ch in text:
+        if escape:
+            output.append(ch)
+            escape = False
+            continue
+        if ch == "\\":
+            output.append(ch)
+            escape = True
+            continue
+        if ch == '"':
+            in_string = not in_string
+            output.append(ch)
+            continue
+        if in_string and ch in ("\n", "\r"):
+            output.append("\\n")
+            continue
+        output.append(ch)
+    return "".join(output)
+
+
 def _hash_key(payload: str) -> str:
     return hashlib.sha1(payload.encode("utf-8")).hexdigest()
 
@@ -43,10 +67,19 @@ def _extract_json(text: str) -> Dict:
     end = text.rfind("}")
     if start == -1 or end == -1 or end <= start:
         raise LlmResponseError("No JSON object found")
+    payload = _escape_newlines_in_strings(text[start : end + 1])
     try:
-        return json.loads(text[start : end + 1])
-    except json.JSONDecodeError as exc:
-        raise LlmResponseError(f"Invalid JSON: {exc}") from exc
+        return json.loads(payload)
+    except json.JSONDecodeError:
+        normalized = re.sub(r",\s*([}\]])", r"\1", payload)
+        normalized = re.sub(r"\bTrue\b", "true", normalized)
+        normalized = re.sub(r"\bFalse\b", "false", normalized)
+        normalized = re.sub(r"\bNone\b", "null", normalized)
+        try:
+            return json.loads(normalized)
+        except json.JSONDecodeError as exc:
+            snippet = normalized[:400].replace("\n", "\\n")
+            raise LlmResponseError(f"Invalid JSON: {exc}. Snippet: {snippet}") from exc
 
 
 async def _call_llm_json(model: str, messages: List[Dict[str, str]]) -> Dict:
@@ -254,6 +287,7 @@ async def run_pipeline(
     model_name: str,
     model_card_path: Path,
     requirements: List[Requirement],
+    model_card_url: str | None = None,
 ) -> ModelReport:
     cache = FileCache(CACHE_DIR)
     text = read_model_card(model_card_path)
@@ -287,6 +321,7 @@ async def run_pipeline(
     return ModelReport(
         model_name=model_name,
         model_card_source=str(model_card_path),
+        model_card_url=model_card_url,
         scores=list(scores),
         cop_percentage=cop_pct,
         stream_percentage=stream_pct,

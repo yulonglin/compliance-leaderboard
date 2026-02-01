@@ -57,7 +57,10 @@ def load_reports() -> List[Dict[str, Any]]:
 def load_leaderboard() -> pd.DataFrame:
     leaderboard_path = RESULTS_DIR / "leaderboard.csv"
     if leaderboard_path.exists():
-        return pd.read_csv(leaderboard_path)
+        df = pd.read_csv(leaderboard_path)
+        if "model_card_url" not in df.columns:
+            df["model_card_url"] = ""
+        return df
 
     reports = load_reports()
     if not reports:
@@ -68,6 +71,7 @@ def load_leaderboard() -> pd.DataFrame:
         rows.append(
             {
                 "model": report["model_name"],
+                "model_card_url": report.get("model_card_url", ""),
                 "eu_code_of_practice_pct": report["cop_percentage"],
                 "stream_pct": report["stream_percentage"],
                 "lab_safety_pct": report["lab_safety_percentage"],

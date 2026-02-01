@@ -14,6 +14,8 @@ uv sync
 cp .env.example .env
 # Edit .env with API keys
 uv run python scripts/download_model_cards.py
+# Optional: include extracted images alongside markdown
+# uv run python scripts/download_model_cards.py --with-images
 uv run python scripts/run_pipeline.py
 uv run streamlit run run_app.py
 ```

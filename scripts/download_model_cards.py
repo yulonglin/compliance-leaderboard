@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import tempfile
 from html.parser import HTMLParser
@@ -55,11 +56,17 @@ def _relativize_image_paths(markdown: str, images_dir: Path) -> str:
     return markdown.replace(abs_path, f"{images_dir.name}/")
 
 
-def download_and_convert(name: str, url: str, output_dir: Path, with_images: bool) -> None:
+def download_and_convert(
+    name: str,
+    url: str,
+    output_dir: Path,
+    with_images: bool,
+    force: bool = False,
+) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     out_path = output_dir / f"{name}.md"
     images_dir = output_dir / f"{name}_images"
-    if out_path.exists():
+    if out_path.exists() and not force:
         if with_images:
             has_images = images_dir.exists() and any(images_dir.iterdir())
             if has_images:
@@ -131,7 +138,18 @@ def _report_non_pdf_links(links: Iterable[str]) -> None:
             print(f"   - {link}")
 
 
-def _download_from_index(output_dir: Path, limit: int | None, with_images: bool) -> None:
+def _write_sources(output_dir: Path, sources: dict[str, str]) -> None:
+    sources_path = output_dir / "sources.json"
+    sources_path.write_text(json.dumps(sources, indent=2, ensure_ascii=True))
+    print(f"  Updated sources index: {sources_path}")
+
+
+def _download_from_index(
+    output_dir: Path,
+    limit: int | None,
+    with_images: bool,
+    sources: dict[str, str],
+) -> None:
     for name, url in INDEX_PAGES.items():
         print(f"\nScanning index: {name} -> {url}")
         try:
@@ -153,6 +171,7 @@ def _download_from_index(output_dir: Path, limit: int | None, with_images: bool)
             card_name = _name_from_url(pdf_url)
             try:
                 download_and_convert(card_name, pdf_url, output_dir, with_images)
+                sources[card_name] = pdf_url
             except Exception as exc:
                 print(f"  FAILED {card_name}: {exc}")
                 print(
@@ -202,10 +221,12 @@ if __name__ == "__main__":
     }
 
     output_dir = Path("data/model_cards")
+    sources: dict[str, str] = dict(MODEL_CARDS)
 
     for name, url in MODEL_CARDS.items():
         try:
             expected = EXPECTED_SNIPPETS.get(name)
+            force = False
             if expected:
                 out_path = output_dir / f"{name}.md"
                 if out_path.exists():
@@ -214,8 +235,8 @@ if __name__ == "__main__":
                         print(
                             f"  Warning: {name}.md does not mention '{expected}', re-downloading."
                         )
-                        out_path.unlink(missing_ok=True)
-            download_and_convert(name, url, output_dir, args.with_images)
+                        force = True
+            download_and_convert(name, url, output_dir, args.with_images, force=force)
         except Exception as exc:
             print(f"  FAILED {name}: {exc}")
             print(
@@ -224,4 +245,6 @@ if __name__ == "__main__":
             )
 
     if args.from_index:
-        _download_from_index(output_dir, args.index_limit, args.with_images)
+        _download_from_index(output_dir, args.index_limit, args.with_images, sources)
+
+    _write_sources(output_dir, sources)
