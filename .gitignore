@@ -1,0 +1,8 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.cache/
+.claude/
+.gitdir/
+.DS_Store
