@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from app.utils import level_color, load_reports, requirement_map
+from app.utils import level_color, load_reports, requirement_map, render_model_card_banner
 
 
 def _style_score(value: int) -> str:
@@ -38,6 +38,11 @@ def render() -> None:
     cols[1].metric("STREAM ChemBio", f"{report['stream_percentage']:.1f}%")
     cols[2].metric("Lab Safety", f"{report['lab_safety_percentage']:.1f}%")
     cols[3].metric("Overall", f"{report['overall_percentage']:.1f}%")
+
+    # Display model card banner if available
+    model_card_url = report.get("model_card_url")
+    if model_card_url:
+        st.markdown(render_model_card_banner(selected, model_card_url), unsafe_allow_html=True)
 
     missing = []
     for score in report["scores"]:

@@ -91,3 +91,65 @@ def load_requirements() -> List[Dict[str, Any]]:
 
 def requirement_map() -> Dict[str, Dict[str, Any]]:
     return {req["id"]: req for req in load_requirements()}
+
+
+def render_model_card_banner(model_name: str, model_card_url: str) -> str:
+    """Generate HTML for model card source banner.
+
+    Args:
+        model_name: Name of the model to display
+        model_card_url: URL to the model card source document
+
+    Returns:
+        HTML string with tri-gradient banner styling
+    """
+    return f"""
+    <style>
+    @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+    .model-card-banner {{
+        border: 1px solid #0f172a;
+        background: linear-gradient(135deg, #fef3c7 0%, #e0f2fe 55%, #f0fdf4 100%);
+        border-radius: 16px;
+        padding: 14px 18px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
+        margin: 6px 0 18px 0;
+    }}
+    .model-card-banner .label {{
+        font-family: "IBM Plex Sans", sans-serif;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        color: #0f172a;
+        font-weight: 600;
+    }}
+    .model-card-banner .title {{
+        font-family: "Fraunces", serif;
+        font-size: 1.2rem;
+        color: #0f172a;
+        margin-top: 6px;
+    }}
+    .model-card-banner a {{
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+        font-family: "IBM Plex Sans", sans-serif;
+        font-weight: 600;
+        color: #0c4a6e;
+        text-decoration: none;
+        border-bottom: 2px solid rgba(12, 74, 110, 0.3);
+        padding-bottom: 2px;
+    }}
+    .model-card-banner a:hover {{
+        color: #075985;
+        border-bottom-color: rgba(7, 89, 133, 0.6);
+    }}
+    </style>
+    <div class="model-card-banner">
+        <div class="label">Model Card Source</div>
+        <div class="title">{model_name}</div>
+        <a href="{model_card_url}" target="_blank" rel="noopener noreferrer">
+            Open model card ↗
+        </a>
+    </div>
+    """
