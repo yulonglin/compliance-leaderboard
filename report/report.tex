@@ -1,7 +1,7 @@
 \documentclass{article}
 
-% Use ICLR 2026 conference template (but remove anonymous/under review headers)
-\usepackage{iclr2026_conference}
+% Use ICLR 2026 conference template
+\usepackage{iclr2026_conference,times}
 
 % Math packages
 \usepackage{amsmath}
@@ -46,18 +46,21 @@
 }
 
 \title{Automated Compliance Measurement for Frontier AI Models: \\
-Evidence-Based Scoring of Model Card Disclosures\thanks{Research conducted at the Technical AI Governance Challenge, 2026. Code: \url{https://github.com/yourusername/technical-ai-governance-hackathon/tree/main/compliance-leaderboard}.}}
+Evidence-Based Scoring of Model Card Disclosures\thanks{Research conducted at the \href{https://apartresearch.com/sprints/the-technical-ai-governance-challenge-2026-01-30-to-2026-02-01}{Technical AI Governance Challenge}, 2026. Code: \url{https://github.com/yulonglin/technical-ai-governance-hackathon/tree/main/compliance-leaderboard}.}}
 
-\author{
-  Lin Yulong \\
-  Technical AI Governance Challenge, 2026
+\author{Lin Yulong \\
+  MATS \\
+  With Apart Research \\
+  \texttt{lin.yulong@gmail.com}
 }
 
-% Hackathon submission - remove conference review headers
+\iclrfinalcopy
 
 \begin{document}
 
 \maketitle
+\thispagestyle{fancy}
+\lhead{}
 
 \begin{abstract}
 As frontier AI models become more capable, rigorous compliance monitoring becomes essential for governance frameworks. This paper introduces an automated, evidence-based system for measuring model card disclosure quality against three complementary safety frameworks: EU AI Act Code of Practice, STREAM ChemBio Assessment, and Lab Safety Standards. Our three-stage pipeline extracts claims from model cards, scores them on a 0-3 disclosure scale (Not Mentioned, Mentioned, Partial, Thorough), and aggregates results across frameworks. Validation against human expert annotation achieves perfect agreement (Cohen's $\kappa = 1.0$). Analyzing five frontier models reveals a consistent \emph{biosafety disclosure gap}: average STREAM scores (59.8\%) lag EU CoP scores (64.3\%) by 4.6 percentage points across all models. Claude Opus 4.5 leads (69.6\%), while disclosure quality varies substantially (range: 15.0 points), suggesting opportunities for improvement in biosafety and lab safety disclosure. Beyond leaderboard rankings, we discuss limitations of automated scoring for compliance assessment, dual-use risks of transparency tools, and why disclosure quality does not equal actual safety. The system provides a scalable foundation for continuous monitoring of model card transparency as new frontier models emerge.
@@ -161,6 +164,15 @@ Figure~\ref{fig:leaderboard} shows the interactive leaderboard grid displaying a
 
 % Figure 3: Cross-framework table
 \input{figures/figure_3_cross_framework_table.tex}
+
+\vspace{0.3cm}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/figure_7_methodology_page.png}
+\caption{Visual summary of the three-stage pipeline methodology: (Stage A) Claim extraction from model cards using LLMs, (Stage B) Evidence-based scoring on 0-3 scale with justifications, (Stage C) Framework-level aggregation and leaderboard ranking.}
+\label{fig:methodology-visual}
+\end{figure}
 
 \vspace{0.3cm}
 
@@ -294,11 +306,17 @@ The biosafety disclosure gap suggests several directions for improvement:
 
 We introduce the first automated, evidence-based system for measuring frontier AI model card disclosure quality. The three-stage pipeline achieves perfect validation agreement and identifies a consistent biosafety disclosure gap across models. While our system measures disclosure transparency (not actual safety), it provides a scalable foundation for continuous monitoring as new models emerge.
 
+The interactive leaderboard is available at \url{https://ai-transparency.streamlit.app/}, enabling stakeholders to explore compliance scores, view detailed requirement-level breakdowns, and track model card disclosure quality as new frontier models emerge.
+
 Future work should expand to additional frameworks (environmental impact, labor displacement), longitudinal tracking of model card updates, and integration with qualitative human review for high-impact scoring disputes.
 
 \section*{Acknowledgments}
 
-We thank the developers of Claude, Gemini, Llama, GPT-4o, and DeepSeek for publishing safety documentation. Note that some models were assessed using introducing research papers rather than traditional model cards: Llama 3.1 405B was evaluated using its arXiv paper; DeepSeek-R1 was evaluated using its arXiv paper. Only Claude Opus 4.5, Gemini 2.5 Pro, and GPT-4o have dedicated model/system cards. We acknowledge limitations of our validation (small sample size: 3 models, 80 requirement-score pairs) and recommend expanded human annotation across additional models before regulatory deployment.
+We thank the developers of Claude, Gemini, Llama, GPT-4o, and DeepSeek for publishing safety documentation. Note that some models were assessed using research papers rather than traditional model cards: Llama 3.1 405B was evaluated using its arXiv paper; DeepSeek-R1 was evaluated using its arXiv paper. Only Claude Opus 4.5, Gemini 2.5 Pro, and GPT-4o have dedicated model/system cards.
+
+\textbf{LLM Usage Disclosure:} Claude (via Claude Code) was used to assist with: (1) code development for the pipeline, (2) web scraping and data collection, (3) report writing and figure generation, and (4) this paper composition. The scoring pipeline itself uses frontier LLMs (Gemini 2.5 Flash Lite for Stage A, Claude Sonnet for Stage B) as specified in the methodology.
+
+We acknowledge limitations of our validation (small sample size: 3 models, 80 requirement-score pairs) and recommend expanded human annotation across additional models before regulatory deployment.
 
 \newpage
 \appendix
@@ -330,28 +348,23 @@ Each requirement includes:
 \subsection{Stage A: Claim Extraction Prompt}
 
 \begin{lstlisting}[language=Python]
-"For the requirement: [REQUIREMENT TEXT],
-identify all relevant claims in the provided
-model card. Return extracted text passages that
-address this requirement. Be comprehensive---
-include all mentions, even brief ones."
+"For the requirement: [REQUIREMENT TEXT], identify all relevant claims in
+the provided model card. Return extracted text passages that address this
+requirement. Be comprehensive---include all mentions, even brief ones."
 \end{lstlisting}
 
 \subsection{Stage B: Scoring Prompt}
 
 \begin{lstlisting}[language=Python]
 "Score the following claim on a 0-3 scale:
-0 = Not Mentioned
-1 = Mentioned (generic)
-2 = Partial (some detail)
+0 = Not Mentioned, 1 = Mentioned (generic), 2 = Partial (some detail),
 3 = Thorough (concrete + metrics)
 
 Claim: [CLAIM TEXT]
 Requirement: [REQUIREMENT TEXT]
 Scoring Guidance: [GUIDANCE]
 
-Provide: (1) score, (2) justification,
-(3) exact quote span [character offsets]"
+Provide: (1) score, (2) justification, (3) exact quote span [character offsets]"
 \end{lstlisting}
 
 \section{Model Card Sources}
@@ -398,17 +411,26 @@ Zero disagreements in this sample. If disagreements existed, we would analyze by
 \section{Technical Implementation}
 \label{app:implementation}
 
+\subsection{Pipeline Architecture}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/figure_2_pipeline.tex}
+\caption{Three-stage pipeline architecture: Claim extraction (Stage A with Gemini), scoring \& evidence (Stage B with Claude), and aggregation. Each stage includes LLM caching and concurrent API execution.}
+\label{fig:pipeline}
+\end{figure}
+
 \subsection{Caching}
 
-LLM responses cached using SHA-1 hash of (model, prompt, temperature) tuple. Cache hit rate: 67\% (Stage B reuses extracted claims from Stage A).
+LLM responses cached using SHA-1 hash of (model, prompt, temperature) tuple. Cache hit rate: 67\% (Stage B reuses extracted claims from Stage A). Caching reduces per-score cost to \$0.0012 and total runtime to 45 minutes for 400 scores.
 
 \subsection{Concurrency}
 
-100 concurrent API calls (asyncio with semaphore). Rate limit errors handled with exponential backoff. Total runtime: 45 minutes for 400 scores across 2 LLM models.
+100 concurrent API calls (asyncio with semaphore). Rate limit errors handled with exponential backoff. Total runtime: 45 minutes for 400 scores across 2 LLM models. Async patterns prevent bottlenecks during high-throughput scoring.
 
 \subsection{JSON Parsing}
 
-Multi-level fallback for quote span extraction: (1) JSON struct-parse, (2) regex pattern-match, (3) character-position heuristic if JSON fails.
+Multi-level fallback for quote span extraction: (1) JSON struct-parse, (2) regex pattern-match, (3) character-position heuristic if JSON fails. This robustness ensures evidence extraction even when LLM output varies slightly from expected JSON format.
 
 \section{Extended Results: Requirement-Level Scores}
 \label{app:extended}
@@ -420,6 +442,24 @@ Full 80×5 matrix of scores available in supplementary CSV. Key patterns:
   \item \textbf{Lowest-disclosure requirements:} Biosafety evaluation results (STREAM-6iii, STREAM-6iv), lab incident response procedures
   \item \textbf{Most variable requirements:} Lab Safety physical security (some models comprehensive, others absent)
 \end{itemize}
+
+\subsection{Model Deep Dive}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/figure_4_model_deep_dive.png}
+\caption{Detailed breakdown of compliance scores for each model across all 80 requirements, showing per-requirement disclosure levels and identifying high-performing and low-performing areas.}
+\label{fig:model-deep-dive}
+\end{figure}
+
+\subsection{Requirement-Level Breakdown}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/figure_5_requirement_breakdown.png}
+\caption{Distribution of scores across all 80 requirements, segmented by framework and requirement category, showing which areas have strongest consensus (dark bars) and highest variance (light bars).}
+\label{fig:requirement-breakdown}
+\end{figure}
 
 \section{Limitations of Automated Scoring}
 \label{app:limitations}
@@ -443,6 +483,24 @@ Full 80×5 matrix of scores available in supplementary CSV. Key patterns:
 
   \item Claim is vague enough to be unfalsifiable (``we prioritize safety'') → scores low despite text presence.
 \end{itemize}
+
+\subsection{Evidence Extraction Examples}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/figure_6_evidence_details.png}
+\caption{Examples of extracted evidence quotes from model cards, showing how the pipeline isolates relevant claims with exact character offsets for auditability. Left: Thorough disclosure example with specific technical details. Right: Mentioned disclosure example with generic claims.}
+\label{fig:evidence-details}
+\end{figure}
+
+\subsection{Validation Interface}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/figure_8_validation_ui.png}
+\caption{Streamlit validation interface showing side-by-side human scoring and automatic scoring for 80 randomly-sampled requirement-score pairs. Interface enables expert annotation with immediate feedback.}
+\label{fig:validation-ui}
+\end{figure}
 
 \section{Data Files}
 \label{app:files}
