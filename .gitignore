@@ -6,3 +6,7 @@ __pycache__/
 .claude/
 .gitdir/
 .DS_Store
+
+# Override global gitignore to include these for Streamlit Cloud deployment
+!results/
+!data/rubrics/

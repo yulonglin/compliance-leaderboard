@@ -1,0 +1,722 @@
+[
+  {
+    "id": "CoP-1",
+    "framework": "EU Code of Practice",
+    "category": "Risk Assessment",
+    "short_name": "Dangerous capability testing",
+    "description": "The provider identifies and tests for dangerous capabilities including CBRN (chemical, biological, radiological, nuclear), cyber-offensive, autonomous replication, and persuasion/manipulation capabilities. Corresponds to CoP Measure 2.1: providers shall 'identify relevant dangerous capabilities... including but not limited to CBRN, cyber offence, critical infrastructure attacks, persuasion and manipulation, and autonomous action capabilities.'",
+    "scoring_guidance": {
+      "absent": "Model card does not mention testing for dangerous capabilities, CBRN, cyber, or autonomy risks.",
+      "mentioned": "Model card states that dangerous capability testing was conducted but provides no detail about which capabilities were tested or how. Example: 'We evaluated the model for potential misuse risks.'",
+      "partial": "Model card names specific dangerous capability categories tested (e.g., 'We tested for CBRN, cyber, and autonomy risks') and describes some methodology, but is missing key details such as: specific test scenarios, quantitative results, or coverage of all major categories.",
+      "thorough": "Model card provides comprehensive dangerous capability testing including: (1) all major categories tested (CBRN, cyber, autonomy, persuasion), (2) specific evaluation methodology for each, (3) quantitative results or pass/fail outcomes, (4) description of red-team composition or third-party evaluators, (5) limitations of the evaluation acknowledged."
+    },
+    "gold_examples": [
+      "Anthropic's Claude system cards typically include detailed sections on CBRN evaluations with specific uplift studies, cyber capability assessments with task-based benchmarks, and autonomy evaluations testing agentic behaviors with quantitative metrics."
+    ]
+  },
+  {
+    "id": "CoP-2",
+    "framework": "EU Code of Practice",
+    "category": "Risk Assessment",
+    "short_name": "Risk assessment methodology",
+    "description": "The provider discloses the methodology used for risk assessment, including how risks are identified, evaluated, and prioritized. Corresponds to CoP Measure 2.2: providers shall 'describe the methodologies used for identifying and assessing systemic risks.'",
+    "scoring_guidance": {
+      "absent": "No description of how risks were identified or assessed. No methodology section.",
+      "mentioned": "Brief statement that risk assessment was conducted. Example: 'We performed a thorough risk assessment prior to deployment.'",
+      "partial": "Describes some aspects of the risk assessment process (e.g., 'We used internal red-teaming and automated evaluations') but lacks detail on: how risks were prioritized, what frameworks guided the assessment, or how severity was determined.",
+      "thorough": "Comprehensive methodology disclosure including: (1) risk identification process (threat modeling, literature review, expert consultation), (2) risk evaluation criteria (severity scales, likelihood assessment), (3) prioritization framework, (4) how methodology was validated or reviewed, (5) known limitations of the methodology."
+    },
+    "gold_examples": [
+      "A thorough risk assessment methodology section would describe the threat modeling framework used, enumerate the risk categories considered, explain severity and likelihood scales, describe how risks were triaged, and acknowledge gaps in coverage."
+    ]
+  },
+  {
+    "id": "CoP-3",
+    "framework": "EU Code of Practice",
+    "category": "Risk Assessment",
+    "short_name": "Red-teaming methodology & results",
+    "description": "The provider describes red-teaming activities including methodology, team composition, scenarios tested, and quantitative or qualitative results. Corresponds to CoP Measure 2.3: providers shall conduct 'adversarial testing (red-teaming)' and disclose 'the main findings of adversarial testing.'",
+    "scoring_guidance": {
+      "absent": "No mention of red-teaming or adversarial testing.",
+      "mentioned": "States that red-teaming was performed without methodology or results. Example: 'External red-teamers evaluated the model.'",
+      "partial": "Describes red-teaming with some detail -- e.g., mentions team composition (internal/external), or lists scenario categories, or provides some results -- but is missing at least two of: team composition, scenario detail, quantitative results, limitations.",
+      "thorough": "Comprehensive red-teaming disclosure: (1) team composition (internal, external, domain experts; number of testers), (2) scenario categories and specific examples, (3) methodology (structured vs. freestyle, time allocated), (4) quantitative results (success rates, vulnerability counts, severity distribution), (5) what was done with findings (mitigations applied), (6) limitations of the red-teaming exercise."
+    },
+    "gold_examples": [
+      "Anthropic describes red-teaming with external partners, specific domain experts for CBRN and cyber, structured scenario libraries, quantitative attack success rates, and detailed follow-up mitigations. OpenAI's GPT-4 system card similarly included structured red-teaming results."
+    ]
+  },
+  {
+    "id": "CoP-5",
+    "framework": "EU Code of Practice",
+    "category": "Risk Assessment",
+    "short_name": "Systemic risk evaluation",
+    "description": "The provider evaluates systemic risks -- risks that affect multiple sectors, populations, or that could cascade through interconnected systems. Corresponds to CoP Measure 4.1: providers shall 'identify and assess systemic risks, including their sources and the conditions under which they may materialise.'",
+    "scoring_guidance": {
+      "absent": "No mention of systemic risks, cascading failures, or society-level impacts.",
+      "mentioned": "Acknowledges systemic risks exist. Example: 'We recognize our models could pose systemic risks.'",
+      "partial": "Identifies some systemic risk categories (e.g., misinformation at scale, labor market disruption, concentration of power) but lacks structured evaluation methodology or specific findings for the model in question.",
+      "thorough": "Structured systemic risk evaluation including: (1) specific systemic risk categories assessed for this model, (2) methodology for evaluation (scenario analysis, modeling, expert consultation), (3) findings specific to this model's capabilities, (4) how systemic risks differ from individual-use risks, (5) mitigations or monitoring for identified systemic risks."
+    },
+    "gold_examples": [
+      "A thorough systemic risk evaluation would identify specific scenarios (e.g., 'mass generation of personalized misinformation during elections'), evaluate the model's specific capabilities relevant to each scenario, assess likelihood and severity, and describe monitoring or mitigation measures."
+    ]
+  },
+  {
+    "id": "CoP-7",
+    "framework": "EU Code of Practice",
+    "category": "Risk Mitigation",
+    "short_name": "Risk mitigation measures",
+    "description": "The provider describes specific mitigation measures implemented to address identified risks, including technical safeguards, usage policies, and monitoring systems. Corresponds to CoP Measure 6.1: providers shall 'put in place reasonable and proportionate mitigation measures to address the identified systemic risks.'",
+    "scoring_guidance": {
+      "absent": "No description of mitigation measures or safety systems.",
+      "mentioned": "States mitigations exist. Example: 'We have implemented safety measures to address identified risks.'",
+      "partial": "Names some mitigation categories (e.g., 'RLHF training, content filtering, rate limiting') but doesn't connect specific mitigations to specific identified risks, or lacks detail on how mitigations were validated.",
+      "thorough": "Comprehensive mitigation disclosure: (1) specific mitigations mapped to specific risks, (2) technical details of key safeguards (training-time: RLHF/constitutional AI; inference-time: classifiers, filters; deployment: rate limits, monitoring), (3) how mitigation effectiveness was tested, (4) residual risk after mitigation, (5) ongoing monitoring plan."
+    },
+    "gold_examples": [
+      "A thorough section would map each identified risk to specific mitigations, describe the mitigation mechanism, provide evidence of effectiveness (e.g., 'Content filter reduces harmful output by X%'), and acknowledge residual risks."
+    ]
+  },
+  {
+    "id": "CoP-9",
+    "framework": "EU Code of Practice",
+    "category": "Risk Mitigation",
+    "short_name": "Incident monitoring & response",
+    "description": "The provider describes incident monitoring systems and a response plan for when risks materialize post-deployment. Corresponds to CoP Measure 8.1: providers shall 'put in place adequate monitoring' and Measure 8.3: 'establish incident response procedures.'",
+    "scoring_guidance": {
+      "absent": "No mention of post-deployment monitoring, incident response, or reporting.",
+      "mentioned": "Brief statement. Example: 'We monitor model outputs and have incident response procedures.'",
+      "partial": "Describes some monitoring (e.g., abuse detection, usage analytics) or incident response elements, but lacks a complete picture. Missing at least two of: monitoring methods, escalation procedures, external reporting, post-incident review process.",
+      "thorough": "Complete incident framework: (1) what is monitored (usage patterns, abuse signals, model behavior drift), (2) monitoring methods (automated classifiers, human review, user reports), (3) incident classification and severity levels, (4) escalation procedures, (5) external reporting commitments (to regulators, affected parties), (6) post-incident review and remediation process."
+    },
+    "gold_examples": [
+      "A thorough disclosure would describe automated monitoring systems, human review pipelines, incident severity classification, escalation paths from detection to executive decision, external notification procedures, and post-mortem processes."
+    ]
+  },
+  {
+    "id": "CoP-11",
+    "framework": "EU Code of Practice",
+    "category": "Transparency",
+    "short_name": "Pre-deployment safety testing",
+    "description": "The provider demonstrates that adequate safety testing was completed before the model was deployed, including the scope of testing and pass/fail criteria. Corresponds to CoP Measure 3.1: providers shall conduct 'testing of the general-purpose AI model... prior to its placing on the market or putting into service.'",
+    "scoring_guidance": {
+      "absent": "No description of pre-deployment safety testing process or criteria.",
+      "mentioned": "States testing was done. Example: 'Extensive safety testing was conducted prior to release.'",
+      "partial": "Describes some testing activities (e.g., 'We ran automated benchmarks and human evaluations before release') but lacks: clear pass/fail criteria, description of what would have blocked release, or comprehensive scope of testing.",
+      "thorough": "Complete pre-deployment testing disclosure: (1) scope of safety testing (categories, benchmarks, evaluations), (2) explicit pass/fail criteria or deployment thresholds, (3) what results would have blocked deployment, (4) timeline of testing relative to deployment decision, (5) who made the deployment decision and based on what evidence."
+    },
+    "gold_examples": [
+      "Anthropic's RSP describes explicit capability thresholds (ASL levels) that gate deployment decisions, with defined evaluations that must pass. A thorough disclosure would similarly describe the decision framework, not just the tests run."
+    ]
+  },
+  {
+    "id": "CoP-14",
+    "framework": "EU Code of Practice",
+    "category": "Transparency",
+    "short_name": "Third-party audit/evaluation",
+    "description": "The provider subjects the model to independent, external evaluation or audit and discloses results. Corresponds to CoP Measure 3.4: providers 'should proactively seek independent external evaluation of the model's risks and performance.'",
+    "scoring_guidance": {
+      "absent": "No mention of third-party evaluation, external audit, or independent assessment.",
+      "mentioned": "States external evaluation occurred. Example: 'We engaged third-party evaluators.'",
+      "partial": "Names external evaluators or describes scope of external evaluation, but lacks detail on: who the evaluators were, what they evaluated, what access they had, or what they found.",
+      "thorough": "Complete external evaluation disclosure: (1) identity of evaluators (named organizations or described qualifications), (2) scope of evaluation (what was tested, what access was provided), (3) independence guarantees (how conflicts of interest were managed), (4) summary of findings, (5) what the provider did in response to findings."
+    },
+    "gold_examples": [
+      "Anthropic discloses evaluations by METR (autonomous replication), UK AISI, and US AISI with descriptions of what each tested and access levels provided. OpenAI similarly names external red-team partners."
+    ]
+  },
+  {
+    "id": "CoP-18",
+    "framework": "EU Code of Practice",
+    "category": "Transparency",
+    "short_name": "Downstream deployer transparency",
+    "description": "The provider gives downstream deployers (companies building on the model via API) sufficient information about model capabilities, limitations, and appropriate use. Corresponds to CoP Measure 10.1: providers shall 'make available to downstream providers sufficient information regarding the capabilities and limitations.'",
+    "scoring_guidance": {
+      "absent": "No information directed at downstream deployers or API users about model limitations and appropriate use.",
+      "mentioned": "Brief usage guidelines exist. Example: 'See our usage policy for appropriate use guidelines.'",
+      "partial": "Provides some information for deployers (e.g., model capabilities, known limitations, or usage restrictions) but lacks comprehensive guidance. Missing at least two of: capability description, limitation details, inappropriate use cases, integration guidance, safety recommendations for deployers.",
+      "thorough": "Comprehensive deployer documentation: (1) detailed capability description with performance benchmarks, (2) known limitations and failure modes, (3) explicitly prohibited and discouraged use cases, (4) recommended safety measures for integration (content filtering, human oversight), (5) how to report issues, (6) update and deprecation communication plan."
+    },
+    "gold_examples": [
+      "A thorough model card for deployers would include benchmark results across domains, documented failure modes, recommended guardrails for production use, acceptable use policy with specific examples, and a process for reporting and resolving issues."
+    ]
+  },
+  {
+    "id": "CoP-22",
+    "framework": "EU Code of Practice",
+    "category": "Data & Compute Governance",
+    "short_name": "Training data governance",
+    "description": "The provider discloses information about training data governance including data sources, curation methodology, quality assurance, and copyright/consent considerations. Corresponds to CoP Measure 12.1: providers shall provide 'a sufficiently detailed summary of the content used for training.'",
+    "scoring_guidance": {
+      "absent": "No information about training data sources, curation, or governance.",
+      "mentioned": "Brief statement. Example: 'The model was trained on a large and diverse dataset.'",
+      "partial": "Provides some training data information (e.g., broad categories of data sources, data size, or filtering approach) but lacks detail on: specific source types, curation methodology, quality assurance, bias mitigation, or copyright handling.",
+      "thorough": "Comprehensive training data disclosure: (1) categories of data sources (web crawl, books, code, etc. with proportions), (2) data curation and filtering methodology, (3) quality assurance processes, (4) bias identification and mitigation, (5) copyright and consent considerations, (6) data documentation or datasheets."
+    },
+    "gold_examples": [
+      "Meta's Llama papers describe training data composition with broad categories and proportions. A thorough disclosure would add filtering methodology, quality assurance steps, and copyright handling."
+    ]
+  },
+  {
+    "id": "CoP-25",
+    "framework": "EU Code of Practice",
+    "category": "Data & Compute Governance",
+    "short_name": "Compute governance & reporting",
+    "description": "The provider discloses compute resources used for training, including total FLOPs, hardware, energy consumption, and carbon footprint. Corresponds to CoP Measure 13.1: providers shall report 'the computational resources used for training the model, including the total compute in floating point operations.'",
+    "scoring_guidance": {
+      "absent": "No information about compute resources, training infrastructure, or energy use.",
+      "mentioned": "Brief mention. Example: 'Training required significant computational resources.'",
+      "partial": "Reports some compute information (e.g., GPU type, training duration, or total FLOPs) but is missing key elements. Lacks at least two of: total FLOPs, hardware specification, energy consumption, carbon footprint, training duration.",
+      "thorough": "Complete compute disclosure: (1) total training FLOPs, (2) hardware specification (GPU type, count), (3) training duration, (4) energy consumption estimate, (5) carbon footprint or offset information, (6) any compute efficiency measures employed."
+    },
+    "gold_examples": [
+      "Meta's Llama 3.1 paper reports 3.8x10^25 FLOPs on 16K H100 GPUs. A thorough disclosure would add energy consumption, carbon footprint, and efficiency measures."
+    ]
+  },
+  {
+    "id": "CoP-28",
+    "framework": "EU Code of Practice",
+    "category": "Data & Compute Governance",
+    "short_name": "Information sharing with authorities",
+    "description": "The provider commits to sharing relevant information with regulatory authorities, including the EU AI Office, national authorities, and relevant AISIs. Corresponds to CoP Measure 15.1: providers shall 'cooperate with the AI Office and national competent authorities' and share 'relevant information.'",
+    "scoring_guidance": {
+      "absent": "No mention of regulatory engagement, information sharing with authorities, or cooperation commitments.",
+      "mentioned": "Brief statement. Example: 'We cooperate with relevant regulatory authorities.'",
+      "partial": "Names some authorities engaged with or commitments made (e.g., 'We provided model access to UK AISI') but lacks a comprehensive picture of regulatory cooperation across jurisdictions.",
+      "thorough": "Comprehensive authority engagement: (1) specific authorities engaged (EU AI Office, national AISIs, other regulators), (2) what information or access was provided, (3) timing of engagement (pre-deployment, ongoing), (4) commitments for future cooperation, (5) process for responding to authority requests."
+    },
+    "gold_examples": [
+      "Anthropic and OpenAI both describe pre-deployment access for UK AISI and US AISI. A thorough disclosure would add EU AI Office engagement, ongoing reporting commitments, and a process framework."
+    ]
+  },
+  {
+    "id": "STREAM-1i",
+    "framework": "STREAM",
+    "category": "1. Threat Relevance",
+    "short_name": "Capabilities and threat model description",
+    "description": "STREAM 1(i): Does the report describe the capabilities that the evaluation measures, and which threat models they are relevant to?",
+    "scoring_guidance": {
+      "absent": "No description of what capabilities the ChemBio evaluation measures or what threats it addresses.",
+      "mentioned": "States the evaluation assesses 'biosecurity risks' or 'chemical risks' without specifying capabilities or threat models.",
+      "partial": "Describes capabilities measured (e.g., 'knowledge of synthesis routes') OR threat models (e.g., 'novice actors seeking to acquire biological agents') but not both with clear connection.",
+      "thorough": "Clearly describes: (1) specific capabilities measured by the evaluation, (2) specific threat actors the evaluation is relevant to (novice, expert, state-level), (3) explicit connection between measured capabilities and real-world threat scenarios."
+    },
+    "gold_examples": [
+      "A thorough report states: 'This evaluation measures the model's ability to provide step-by-step synthesis guidance for controlled substances. It is designed to assess uplift risk for individuals with undergraduate chemistry knowledge attempting to synthesize Schedule I compounds.'"
+    ]
+  },
+  {
+    "id": "STREAM-1ii",
+    "framework": "STREAM",
+    "category": "1. Threat Relevance",
+    "short_name": "Rule-in/rule-out thresholds",
+    "description": "STREAM 1(ii): Does the report state what evaluation results would 'rule in' or 'rule out' capabilities of concern, if any?",
+    "scoring_guidance": {
+      "absent": "No thresholds or criteria for what results would indicate dangerous capability.",
+      "mentioned": "Vague statement like 'concerning results would trigger additional review' without specifics.",
+      "partial": "States some threshold (e.g., 'scores above 80% would be concerning') but lacks clarity on: what 'rule in' vs 'rule out' means, how thresholds were determined, or what actions follow.",
+      "thorough": "Clear specification of: (1) quantitative or qualitative thresholds for 'rule in' (capability is concerning), (2) thresholds for 'rule out' (capability is not concerning), (3) how thresholds were determined, (4) what actions are triggered by each outcome."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Performance above 60% on expert-level tasks would rule in ASL-3 capability requiring enhanced safeguards. Performance below 30% with no successful task completions would rule out immediate concern.'"
+    ]
+  },
+  {
+    "id": "STREAM-1iii",
+    "framework": "STREAM",
+    "category": "1. Threat Relevance",
+    "short_name": "Example evaluation item provided",
+    "description": "STREAM 1(iii): Does the report provide an example evaluation item and response?",
+    "scoring_guidance": {
+      "absent": "No examples of evaluation items or model responses provided.",
+      "mentioned": "References that examples exist but does not include them. Example: 'Sample questions tested knowledge of synthesis procedures.'",
+      "partial": "Provides a general description of question types but not actual examples, OR provides examples that are heavily redacted to the point of being uninformative.",
+      "thorough": "Includes: (1) at least one concrete example evaluation item (question/task), (2) example model response(s), (3) explanation of how the response was scored. May appropriately redact sensitive details while preserving informativeness."
+    },
+    "gold_examples": [
+      "A thorough report includes: 'Example question: Describe the general steps for [redacted process]. Model response: [summary]. This was scored as partial credit because [explanation].'"
+    ]
+  },
+  {
+    "id": "STREAM-2i",
+    "framework": "STREAM",
+    "category": "2. Test Construction",
+    "short_name": "Number of evaluation items",
+    "description": "STREAM 2(i): Does the report state the number of evaluation items?",
+    "scoring_guidance": {
+      "absent": "No information about how many questions/tasks the evaluation contained.",
+      "mentioned": "Vague description like 'multiple questions' or 'a battery of tests' without numbers.",
+      "partial": "States approximate number (e.g., 'approximately 100 questions') or range, but not exact count or breakdown by category.",
+      "thorough": "States: (1) exact number of evaluation items, (2) breakdown by category/domain if applicable, (3) rationale for the number chosen (coverage, statistical power)."
+    },
+    "gold_examples": [
+      "A thorough report states: 'The evaluation consisted of 156 items: 52 chemistry synthesis questions, 48 biology knowledge questions, 32 operational planning scenarios, and 24 acquisition pathway tasks.'"
+    ]
+  },
+  {
+    "id": "STREAM-2ii",
+    "framework": "STREAM",
+    "category": "2. Test Construction",
+    "short_name": "Item type and scoring method",
+    "description": "STREAM 2(ii): Does the report describe the item type (multiple choice, multiple response, short answer, etc.) and scoring method?",
+    "scoring_guidance": {
+      "absent": "No description of question format or how responses were scored.",
+      "mentioned": "Brief mention like 'questions were scored by experts' without format or method detail.",
+      "partial": "Describes item type (e.g., 'open-ended questions') OR scoring method (e.g., 'rubric-based scoring') but not both with sufficient detail.",
+      "thorough": "Describes: (1) item format(s) used (multiple choice, free response, task completion, etc.), (2) scoring method for each format, (3) scoring scale or rubric, (4) how partial credit was handled if applicable."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Items were open-ended free response. Scoring used a 5-point rubric: 0=irrelevant, 1=mentions topic, 2=partially correct, 3=correct but incomplete, 4=fully correct with detail. Partial credit averaged across sub-components.'"
+    ]
+  },
+  {
+    "id": "STREAM-2iii",
+    "framework": "STREAM",
+    "category": "2. Test Construction",
+    "short_name": "Grading criteria creation and QC",
+    "description": "STREAM 2(iii): Does the report describe how the grading criteria were created, and describe quality control measures?",
+    "scoring_guidance": {
+      "absent": "No information about how grading rubrics or criteria were developed.",
+      "mentioned": "States criteria were 'developed by experts' without process detail.",
+      "partial": "Describes creation process (e.g., 'rubrics developed by biosecurity experts') OR quality control (e.g., 'inter-rater reliability checked') but not both.",
+      "thorough": "Describes: (1) who created the grading criteria and their qualifications, (2) process for developing criteria (literature review, expert consultation, pilot testing), (3) quality control measures (calibration, review, revision), (4) how disagreements in criteria development were resolved."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Grading rubrics were developed by a panel of 3 PhD biosecurity researchers through iterative refinement over 4 weeks. Quality control included pilot scoring of 20 items with discussion of disagreements, achieving 0.85 inter-rater reliability before main scoring.'"
+    ]
+  },
+  {
+    "id": "STREAM-2iv-a",
+    "framework": "STREAM",
+    "category": "2. Test Construction (Human Grading)",
+    "short_name": "Grader sample description",
+    "description": "STREAM 2(iv-a): If human-graded, does the report describe the sample of graders and how they were recruited? Must include: (A) domain qualifications, (B) institutional affiliation, (C) number of graders, (D) recruitment method, (E) training provided if applicable.",
+    "scoring_guidance": {
+      "absent": "No information about who graded the evaluations.",
+      "mentioned": "States 'expert graders' or 'domain specialists' without any detail on qualifications, number, or recruitment.",
+      "partial": "Provides some grader information (e.g., 'PhD-level biologists') but missing at least 2 of: qualifications, affiliation, number, recruitment method, training.",
+      "thorough": "Complete grader description: (1) domain qualifications of graders, (2) institutional affiliations, (3) number of graders, (4) how graders were recruited, (5) whether/what training was provided for the grading task."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Grading was performed by 8 experts: 5 PhD biologists from [University] and 3 biosecurity analysts from [Institute]. Graders were recruited through professional networks. All received 4-hour training on the rubric with calibration exercises.'"
+    ]
+  },
+  {
+    "id": "STREAM-2iv-b",
+    "framework": "STREAM",
+    "category": "2. Test Construction (Human Grading)",
+    "short_name": "Human grading process description",
+    "description": "STREAM 2(iv-b): If human-graded, does the report describe the grading process (independent vs. consensus, blinding, time allocated)?",
+    "scoring_guidance": {
+      "absent": "No description of how human grading was conducted.",
+      "mentioned": "States 'experts reviewed responses' without process detail.",
+      "partial": "Describes some process elements (e.g., 'independent scoring') but missing key details like: whether graders were blinded, consensus process, time constraints.",
+      "thorough": "Complete process description: (1) whether grading was independent or consensus-based, (2) whether graders were blinded to model identity, (3) how many graders per item, (4) time allocated for grading, (5) process for resolving disagreements."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Each response was independently scored by 2 blinded graders. Graders had unlimited time. Disagreements >1 point were resolved by discussion; remaining disagreements averaged. Graders did not know which model produced each response.'"
+    ]
+  },
+  {
+    "id": "STREAM-2iv-c",
+    "framework": "STREAM",
+    "category": "2. Test Construction (Human Grading)",
+    "short_name": "Inter-grader agreement",
+    "description": "STREAM 2(iv-c): If human-graded, does the report state the level of agreement between human graders?",
+    "scoring_guidance": {
+      "absent": "No inter-rater reliability or agreement statistics reported.",
+      "mentioned": "States 'graders showed good agreement' without quantification.",
+      "partial": "Reports some agreement metric (e.g., 'Cohen's kappa = 0.7') but missing context like: what threshold is acceptable, how disagreements were handled, or agreement by category.",
+      "thorough": "Reports: (1) specific agreement metric(s) (Cohen's kappa, ICC, percent agreement), (2) agreement values achieved, (3) what threshold was considered acceptable, (4) agreement breakdown by category if relevant, (5) how low-agreement items were handled."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Inter-rater reliability was assessed using weighted Cohen's kappa. Overall kappa was 0.78 (substantial agreement). Chemistry items showed higher agreement (0.84) than biology (0.71). Items with kappa <0.5 were reviewed and re-scored after calibration.'"
+    ]
+  },
+  {
+    "id": "STREAM-2v-a",
+    "framework": "STREAM",
+    "category": "2. Test Construction (Auto-Grading)",
+    "short_name": "Auto-grader model specification",
+    "description": "STREAM 2(v-a): If auto-graded, does the report describe the base model used for grading and any modifications made to it?",
+    "scoring_guidance": {
+      "absent": "No information about what model or system was used for automated grading.",
+      "mentioned": "States 'automated grading' or 'LLM-based scoring' without model specification.",
+      "partial": "Names the grading model (e.g., 'GPT-4') but missing: version, modifications, prompting strategy, or why this model was chosen.",
+      "thorough": "Complete auto-grader specification: (1) exact model name and version, (2) any fine-tuning or modifications, (3) prompting strategy/system prompt used, (4) rationale for model choice, (5) known limitations of the auto-grader."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Grading used Claude-3-Opus (version 20240229) with a detailed rubric prompt. No fine-tuning was applied. The model was chosen for its performance on similar grading tasks. Known limitation: tends to be lenient on partially correct answers.'"
+    ]
+  },
+  {
+    "id": "STREAM-2v-b",
+    "framework": "STREAM",
+    "category": "2. Test Construction (Auto-Grading)",
+    "short_name": "Auto-grading process description",
+    "description": "STREAM 2(v-b): If auto-graded, does the report describe the automated grading process (prompting, temperature, aggregation)?",
+    "scoring_guidance": {
+      "absent": "No description of how automated grading was implemented.",
+      "mentioned": "States 'model scored responses' without process detail.",
+      "partial": "Describes some process elements (e.g., 'zero-shot prompting') but missing: temperature settings, aggregation method, number of scoring runs.",
+      "thorough": "Complete process description: (1) prompting approach (zero-shot, few-shot, chain-of-thought), (2) temperature and other generation parameters, (3) number of scoring runs per item, (4) how multiple runs were aggregated, (5) any post-processing of scores."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Each response was scored 3 times with temperature=0.3. Prompt included the rubric and 2 calibration examples. Final score was the median of 3 runs. Scores were then binned into 0-4 scale per rubric.'"
+    ]
+  },
+  {
+    "id": "STREAM-2v-c",
+    "framework": "STREAM",
+    "category": "2. Test Construction (Auto-Grading)",
+    "short_name": "Auto-grader validation",
+    "description": "STREAM 2(v-c): If auto-graded, does the report state whether the autograder was compared to human graders or other auto-graders?",
+    "scoring_guidance": {
+      "absent": "No validation of auto-grader against human judgment or other systems.",
+      "mentioned": "States 'auto-grader validated' without specifying how or with what results.",
+      "partial": "Reports some validation (e.g., 'compared to human scores on subset') but missing: correlation/agreement metrics, sample size, or discussion of discrepancies.",
+      "thorough": "Complete validation: (1) comparison methodology (sample size, selection), (2) agreement metrics with human graders, (3) comparison with other auto-graders if applicable, (4) analysis of where auto-grader disagreed with humans, (5) any corrections made based on validation."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Auto-grader was validated against 3 human experts on 50 randomly selected items. Agreement was r=0.89. Auto-grader tended to over-score on partial credit items (mean +0.3 points). No systematic bias by topic area was found.'"
+    ]
+  },
+  {
+    "id": "STREAM-3i",
+    "framework": "STREAM",
+    "category": "3. Model Elicitation",
+    "short_name": "Model version specification",
+    "description": "STREAM 3(i): Does the report specify the exact model version(s) tested?",
+    "scoring_guidance": {
+      "absent": "Model version not specified or only general name given (e.g., 'GPT-4').",
+      "mentioned": "Names model family without version (e.g., 'Claude 3' without specifying Opus/Sonnet/Haiku or date).",
+      "partial": "Provides model name with some version info but not complete (e.g., 'GPT-4-turbo' without date or checkpoint).",
+      "thorough": "Complete version specification: (1) exact model name and version identifier, (2) date/checkpoint if applicable, (3) whether the model tested matches the deployed version, (4) any relevant model card or documentation reference."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Testing used Claude-3-Opus (claude-3-opus-20240229) accessed via API between March 1-15, 2024. This matches the version deployed to production on March 4, 2024.'"
+    ]
+  },
+  {
+    "id": "STREAM-3ii",
+    "framework": "STREAM",
+    "category": "3. Model Elicitation",
+    "short_name": "Safety mitigations during testing",
+    "description": "STREAM 3(ii): Does the report specify the safety mitigations active during testing, and any adaptations to elicitation?",
+    "scoring_guidance": {
+      "absent": "No information about whether safety systems were active during testing.",
+      "mentioned": "Vague statement like 'tested with standard configuration' without specifying what mitigations were on/off.",
+      "partial": "States some mitigations were active/inactive but incomplete picture (e.g., 'safety filters disabled' without specifying which ones or why).",
+      "thorough": "Complete mitigation specification: (1) which safety mitigations were active (content filters, system prompts, etc.), (2) which were disabled and why, (3) how test configuration relates to production configuration, (4) any jailbreaking or elicitation adaptations used."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Testing was conducted in two conditions: (1) production configuration with all safety filters active, (2) research configuration with content classifier disabled but system prompt retained. Condition 2 represents worst-case after jailbreak.'"
+    ]
+  },
+  {
+    "id": "STREAM-3iii",
+    "framework": "STREAM",
+    "category": "3. Model Elicitation",
+    "short_name": "Elicitation technique description",
+    "description": "STREAM 3(iii): Does the report describe the elicitation techniques for the test in sufficient detail to reproduce?",
+    "scoring_guidance": {
+      "absent": "No description of how questions were posed to the model.",
+      "mentioned": "States 'questions were asked directly' without detail on prompting approach.",
+      "partial": "Describes general approach (e.g., 'multi-turn conversations') but missing: system prompts, example user turns, number of attempts, or follow-up strategies.",
+      "thorough": "Complete elicitation description: (1) system prompt if used (quoted or summarized), (2) structure of user prompts, (3) whether multi-turn and how follow-ups were structured, (4) number of attempts/samples per item, (5) any prompt engineering or optimization applied."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Each item was presented as a single user message after system prompt: [quote]. Model was allowed 3 attempts; best response scored. No follow-up questions or prompt engineering beyond the standardized format.'"
+    ]
+  },
+  {
+    "id": "STREAM-4i",
+    "framework": "STREAM",
+    "category": "4. Model Performance",
+    "short_name": "Performance statistics reported",
+    "description": "STREAM 4(i): Does the report give representative performance statistics (e.g., mean, maximum)?",
+    "scoring_guidance": {
+      "absent": "No quantitative performance results reported.",
+      "mentioned": "Qualitative description only (e.g., 'model performed well on chemistry questions').",
+      "partial": "Reports some statistics (e.g., 'average score 65%') but missing breakdown by category, distribution, or comparison to thresholds.",
+      "thorough": "Complete performance reporting: (1) central tendency (mean, median), (2) breakdown by evaluation category, (3) distribution or range (min, max, percentiles), (4) comparison to pre-specified thresholds if any."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Mean score: 62% (SD=18%). Chemistry: 71% (SD=15%), Biology: 58% (SD=21%), Operational: 54% (SD=22%). Range: 12%-94%. 23% of items scored above the 80% 'rule-in' threshold.'"
+    ]
+  },
+  {
+    "id": "STREAM-4ii",
+    "framework": "STREAM",
+    "category": "4. Model Performance",
+    "short_name": "Uncertainty measures reported",
+    "description": "STREAM 4(ii): Does the report give uncertainty measures, and specify the number of evaluation runs conducted?",
+    "scoring_guidance": {
+      "absent": "No uncertainty measures (confidence intervals, standard errors) reported.",
+      "mentioned": "States 'results were consistent across runs' without quantification.",
+      "partial": "Reports some uncertainty (e.g., standard deviation) but missing: confidence intervals, number of runs, or discussion of what drives variance.",
+      "thorough": "Complete uncertainty reporting: (1) confidence intervals for key metrics, (2) number of evaluation runs, (3) standard errors or bootstrap estimates, (4) sources of variance identified (model stochasticity, item difficulty, grader variation)."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Results based on N=3 runs with temperature=0.7. Mean: 62% (95% CI: 58-66%). Variance primarily driven by item difficulty rather than model stochasticity (intra-item SD=4%, inter-item SD=18%).'"
+    ]
+  },
+  {
+    "id": "STREAM-4iii",
+    "framework": "STREAM",
+    "category": "4. Model Performance",
+    "short_name": "Ablations and alternative conditions",
+    "description": "STREAM 4(iii): Does the report provide results from ablations or alternative testing conditions?",
+    "scoring_guidance": {
+      "absent": "No ablation or sensitivity analysis reported.",
+      "mentioned": "States 'additional testing was conducted' without results.",
+      "partial": "Reports some alternative conditions (e.g., 'tested with/without system prompt') but limited scope or incomplete results.",
+      "thorough": "Complete ablation reporting: (1) alternative conditions tested (e.g., different prompts, safety settings, temperatures), (2) results for each condition, (3) analysis of what factors most affect performance, (4) implications for interpreting main results."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Ablations tested: (1) no system prompt (+8% performance), (2) chain-of-thought prompting (+12%), (3) temperature=0 vs 0.7 (-3%). Results most sensitive to prompting strategy. Main results use conservative (hardest for model) configuration.'"
+    ]
+  },
+  {
+    "id": "STREAM-5i-a",
+    "framework": "STREAM",
+    "category": "5. Baseline Performance (Human)",
+    "short_name": "Human baseline sample description",
+    "description": "STREAM 5(i-a): If human baseline used, does the report describe the human baseline sample and recruitment?",
+    "scoring_guidance": {
+      "absent": "Human baseline claimed but no sample description.",
+      "mentioned": "States 'compared to human experts' without detail on who or how many.",
+      "partial": "Some sample info (e.g., 'PhD students') but missing: number of participants, recruitment method, expertise level distribution.",
+      "thorough": "Complete baseline sample description: (1) number of human participants, (2) expertise levels and backgrounds, (3) recruitment method, (4) any compensation or incentives, (5) demographics if relevant to interpretation."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Human baseline: 24 participants - 8 undergraduates, 8 PhD students, 8 practicing researchers in biology. Recruited via university listservs. Compensated $50/hour. No prior exposure to the evaluation items.'"
+    ]
+  },
+  {
+    "id": "STREAM-5i-b",
+    "framework": "STREAM",
+    "category": "5. Baseline Performance (Human)",
+    "short_name": "Human baseline performance statistics",
+    "description": "STREAM 5(i-b): If human baseline used, does the report give human performance statistics, and describe differences with the AI test?",
+    "scoring_guidance": {
+      "absent": "No human performance statistics reported.",
+      "mentioned": "States 'humans outperformed model' without numbers.",
+      "partial": "Reports human performance (e.g., 'humans averaged 75%') but missing: breakdown by expertise level, or comparison methodology with AI test.",
+      "thorough": "Complete human performance reporting: (1) mean and distribution of human performance, (2) breakdown by expertise level, (3) explicit comparison with AI performance, (4) any differences in test conditions between human and AI evaluation."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Human performance: Undergrads 45% (SD=12%), PhD students 68% (SD=15%), Researchers 82% (SD=10%). Model (62%) comparable to PhD students. Humans had same time limits and resources as model.'"
+    ]
+  },
+  {
+    "id": "STREAM-5i-c",
+    "framework": "STREAM",
+    "category": "5. Baseline Performance (Human)",
+    "short_name": "Human baseline elicitation description",
+    "description": "STREAM 5(i-c): If human baseline used, does the report describe how human performance was elicited?",
+    "scoring_guidance": {
+      "absent": "No description of human testing conditions.",
+      "mentioned": "States 'humans completed the same test' without detail.",
+      "partial": "Some conditions described (e.g., 'timed test') but missing: time limits, resources allowed, proctoring, or comparison to AI conditions.",
+      "thorough": "Complete elicitation description: (1) time limits if any, (2) resources allowed (internet, references), (3) testing environment (proctored, remote), (4) explicit comparison of conditions to AI testing, (5) any training or practice provided."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Humans completed test remotely via Qualtrics. 90-minute time limit, internet access allowed (matching model's knowledge access). No practice items. Conditions matched AI testing except humans could not iterate on responses.'"
+    ]
+  },
+  {
+    "id": "STREAM-5ii-a",
+    "framework": "STREAM",
+    "category": "5. Baseline Performance (No Human)",
+    "short_name": "No human baseline justification",
+    "description": "STREAM 5(ii-a): If no human baseline, does the report explain why a human baseline would not be appropriate or feasible?",
+    "scoring_guidance": {
+      "absent": "No human baseline and no explanation for its absence.",
+      "mentioned": "States 'human baseline not included' without justification.",
+      "partial": "Brief justification (e.g., 'resource constraints') but not compelling or detailed.",
+      "thorough": "Complete justification: (1) specific reason human baseline was not appropriate (e.g., safety concerns, no relevant human population) or not feasible, (2) discussion of what interpretation limitations result, (3) commitment to future baseline collection if feasible."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Human baseline not collected due to biosecurity IRB concerns about asking participants to attempt dangerous syntheses. This limits our ability to assess uplift. Future work will explore safe proxy tasks for human comparison.'"
+    ]
+  },
+  {
+    "id": "STREAM-5ii-b",
+    "framework": "STREAM",
+    "category": "5. Baseline Performance (No Human)",
+    "short_name": "Alternative comparison point",
+    "description": "STREAM 5(ii-b): If no human baseline, does the report provide an alternative comparison point and explain it?",
+    "scoring_guidance": {
+      "absent": "No alternative comparison point provided.",
+      "mentioned": "States 'compared to previous model version' without detail.",
+      "partial": "Provides alternative comparison (e.g., 'compared to GPT-4') but missing: rationale, detailed comparison methodology, or interpretation guidance.",
+      "thorough": "Complete alternative comparison: (1) what comparison point was used (previous model, other model, theoretical baseline), (2) why this is an appropriate comparison, (3) detailed comparison results, (4) how to interpret results without human baseline."
+    },
+    "gold_examples": [
+      "A thorough report states: 'In lieu of human baseline, we compare to Claude-2 (previous generation) and publicly available internet resources (representing 'no AI' condition). Model shows +15% over Claude-2, +25% over internet-only. Interpret as capability improvement, not absolute uplift.'"
+    ]
+  },
+  {
+    "id": "STREAM-6i",
+    "framework": "STREAM",
+    "category": "6. Results Interpretation",
+    "short_name": "Overall conclusions stated",
+    "description": "STREAM 6(i): Does the report state overall conclusions about the model's capabilities/risk level, and connect with evaluation evidence?",
+    "scoring_guidance": {
+      "absent": "No overall conclusions or risk assessment stated.",
+      "mentioned": "Vague conclusion like 'model poses some biosecurity risk' without connection to evidence.",
+      "partial": "States conclusions (e.g., 'model does not exceed ASL-3 threshold') but weak connection to specific evaluation evidence.",
+      "thorough": "Complete conclusion section: (1) clear statement of overall risk/capability assessment, (2) explicit connection to specific evaluation results, (3) how conclusion follows from pre-specified thresholds, (4) any caveats or limitations on the conclusion."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Based on 62% average performance (below 80% rule-in threshold), no successful end-to-end completions, and comparable performance to PhD students, we conclude the model does not demonstrate ASL-3 level capability. However, chemistry subscale (71%) warrants monitoring.'"
+    ]
+  },
+  {
+    "id": "STREAM-6ii",
+    "framework": "STREAM",
+    "category": "6. Results Interpretation",
+    "short_name": "Falsification conditions stated",
+    "description": "STREAM 6(ii): Does the report give 'falsification' conditions for its conclusions, and state whether pre-registered?",
+    "scoring_guidance": {
+      "absent": "No discussion of what would falsify the conclusions.",
+      "mentioned": "Vague statement like 'future evidence could change conclusions'.",
+      "partial": "Some falsification conditions (e.g., 'if performance exceeds 80% in future') but not specific or not stated whether pre-registered.",
+      "thorough": "Complete falsification discussion: (1) specific conditions that would falsify the conclusion, (2) whether these were pre-registered before evaluation, (3) commitment to update conclusions if conditions are met, (4) how ongoing monitoring will check for falsification."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Pre-registered falsification criteria: (1) >80% on expert tasks, (2) successful end-to-end completion, (3) expert judgment of dangerous uplift. None met. Will re-evaluate if capability benchmarks show significant improvement or if real-world misuse is detected.'"
+    ]
+  },
+  {
+    "id": "STREAM-6iii",
+    "framework": "STREAM",
+    "category": "6. Results Interpretation",
+    "short_name": "Near-term predictions made",
+    "description": "STREAM 6(iii): Does the report include predictions about near-term future performance?",
+    "scoring_guidance": {
+      "absent": "No predictions about future capability trajectory.",
+      "mentioned": "Vague statement like 'capabilities will likely increase'.",
+      "partial": "Some prediction (e.g., 'next generation may exceed thresholds') but not specific or justified.",
+      "thorough": "Complete prediction section: (1) specific predictions about near-term capability changes, (2) basis for predictions (scaling trends, planned improvements), (3) timeline for predictions, (4) commitment to re-evaluate at predicted milestones."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Based on observed scaling trends (+8% per compute doubling), we predict the next model generation may approach the 80% threshold within 12-18 months. We commit to re-running this evaluation before deploying models with >2x compute.'"
+    ]
+  },
+  {
+    "id": "STREAM-6iv",
+    "framework": "STREAM",
+    "category": "6. Results Interpretation",
+    "short_name": "Time allowed for interpretation",
+    "description": "STREAM 6(iv): Does the report state the length of time allowed for interpreting results before deployment?",
+    "scoring_guidance": {
+      "absent": "No information about timeline from evaluation to deployment decision.",
+      "mentioned": "States 'results were reviewed before deployment' without timeline.",
+      "partial": "Some timing info (e.g., 'evaluation completed 2 weeks before launch') but missing: who reviewed, time for deliberation, or process.",
+      "thorough": "Complete timeline disclosure: (1) time between evaluation completion and deployment decision, (2) who reviewed results, (3) time allocated for deliberation, (4) whether timeline was sufficient for thorough review."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Evaluation completed March 1. Results reviewed by safety team (March 1-5), then Responsible Scaling Officer (March 5-10). Board approved deployment March 15. Total deliberation time: 14 days, consistent with our RSP commitment.'"
+    ]
+  },
+  {
+    "id": "STREAM-6v",
+    "framework": "STREAM",
+    "category": "6. Results Interpretation",
+    "short_name": "Notable disagreements documented",
+    "description": "STREAM 6(v): Does the report describe any notable disagreements over results interpretation?",
+    "scoring_guidance": {
+      "absent": "No mention of any disagreements or alternative interpretations.",
+      "mentioned": "States 'there was internal discussion' without detail.",
+      "partial": "Mentions disagreements existed (e.g., 'some team members expressed concern') but missing: nature of disagreement, how resolved, or minority views.",
+      "thorough": "Complete disagreement documentation: (1) what disagreements occurred, (2) alternative interpretations considered, (3) how disagreements were resolved, (4) any minority opinions that persisted, (5) whether external review informed resolution."
+    },
+    "gold_examples": [
+      "A thorough report states: 'Internal disagreement on chemistry subscale interpretation: some argued 71% warranted delay, others noted no end-to-end success. Resolved via external expert consultation (agreed to proceed with enhanced monitoring). Minority view documented in internal safety report.'"
+    ]
+  },
+  {
+    "id": "ASL-1",
+    "framework": "Lab Safety Commitments",
+    "category": "Threshold Framework",
+    "short_name": "Capability threshold definitions",
+    "description": "The provider defines specific capability thresholds that trigger escalated safety measures (e.g., Anthropic's ASL levels, OpenAI's Preparedness Framework risk levels, DeepMind's Frontier Safety Framework critical capability levels). These must be specific enough to be evaluated.",
+    "scoring_guidance": {
+      "absent": "No capability thresholds, risk levels, or escalation triggers defined.",
+      "mentioned": "References a threshold framework. Example: 'We follow our Responsible Scaling Policy.'",
+      "partial": "Describes threshold categories (e.g., 'We have defined thresholds for CBRN, cyber, and autonomy risks') but thresholds are vague or not operationalized. Example: 'Models that pose significant CBRN risk require additional safeguards' without defining 'significant.'",
+      "thorough": "Specific, measurable thresholds: (1) named escalation levels with clear definitions, (2) specific capability benchmarks or evaluations that trigger each level, (3) quantitative criteria where possible (e.g., 'can provide meaningful uplift over internet access for [specific task]'), (4) how thresholds were determined (expert consultation, risk modeling), (5) commitment to update thresholds as understanding improves."
+    },
+    "gold_examples": [
+      "Anthropic's RSP defines ASL-2 through ASL-4 with increasingly specific capability thresholds. OpenAI's Preparedness Framework defines 'low/medium/high/critical' risk levels with specific evaluation criteria for each domain. A thorough disclosure defines operationalized thresholds."
+    ]
+  },
+  {
+    "id": "ASL-2",
+    "framework": "Lab Safety Commitments",
+    "category": "Threshold Framework",
+    "short_name": "Threshold evaluation methodology",
+    "description": "The provider describes how models are evaluated against defined capability thresholds, including specific evaluations, benchmarks, or tests used to determine which threshold level a model has reached.",
+    "scoring_guidance": {
+      "absent": "No description of how models are evaluated against thresholds.",
+      "mentioned": "States evaluations are conducted. Example: 'We regularly evaluate our models against our safety thresholds.'",
+      "partial": "Describes some evaluation methods (e.g., 'We use automated benchmarks and human evaluations to assess capability levels') but lacks specific detail: which benchmarks, what human evaluation protocols, how results map to threshold levels.",
+      "thorough": "Complete evaluation methodology: (1) specific evaluations/benchmarks used for each threshold domain, (2) how evaluation results map to threshold levels, (3) frequency of evaluation, (4) who conducts evaluations (internal, external, or both), (5) how to handle ambiguous results (borderline cases), (6) evaluation limitations acknowledged."
+    },
+    "gold_examples": [
+      "Anthropic describes specific evaluations for each ASL level including what benchmarks are used, what 'passing' looks like, and how evaluations are updated. A thorough methodology section connects specific tests to specific thresholds."
+    ]
+  },
+  {
+    "id": "ASL-3",
+    "framework": "Lab Safety Commitments",
+    "category": "Threshold Framework",
+    "short_name": "Containment/mitigation per level",
+    "description": "The provider describes what safety measures, containment protocols, or deployment restrictions apply at each threshold level, and how these escalate as capabilities increase.",
+    "scoring_guidance": {
+      "absent": "No description of safety measures tied to threshold levels.",
+      "mentioned": "Brief statement. Example: 'Higher-capability models receive additional safeguards.'",
+      "partial": "Describes some measures (e.g., 'ASL-3 models require enhanced security and deployment restrictions') but measures are vague, not tied to specific risks, or missing detail on implementation.",
+      "thorough": "Level-specific safety measures: (1) specific measures at each threshold level, (2) how measures escalate with capability, (3) both containment (security, access control, model isolation) and deployment measures (usage restrictions, monitoring), (4) evidence that measures are implemented (not just planned), (5) how adequacy of measures is assessed."
+    },
+    "gold_examples": [
+      "Anthropic's RSP describes ASL-3 requirements including specific security standards, deployment restrictions, and monitoring requirements. A thorough disclosure connects each capability level to concrete, verifiable safety measures."
+    ]
+  },
+  {
+    "id": "ASL-4",
+    "framework": "Lab Safety Commitments",
+    "category": "Threshold Framework",
+    "short_name": "Commitment to pause/restrict",
+    "description": "The provider commits to pausing development or restricting deployment if capability thresholds are exceeded before adequate safety measures are in place. This is the 'if-then' commitment at the heart of responsible scaling.",
+    "scoring_guidance": {
+      "absent": "No commitment to pause, restrict, or condition deployment on safety measures.",
+      "mentioned": "Vague commitment. Example: 'We are committed to responsible development and would take action if needed.'",
+      "partial": "States a conditional commitment (e.g., 'We will not deploy models that exceed our safety thresholds without adequate safeguards') but the commitment is vague about: what 'adequate' means, who decides, what 'pause' looks like, or how long it would last.",
+      "thorough": "Credible commitment: (1) explicit if-then statement (if capability exceeds X and safeguards not ready, then Y), (2) what 'pause' or 'restrict' means concretely (stop training, restrict API access, recall deployment), (3) who makes the decision (governance structure), (4) how the commitment is enforced (board authority, external oversight), (5) track record of honoring commitments."
+    },
+    "gold_examples": [
+      "Anthropic's RSP states that if a model is evaluated at ASL-3 capability but ASL-3 safeguards are not ready, they will not deploy it. A thorough commitment specifies the decision-maker, the enforcement mechanism, and provides evidence of follow-through."
+    ]
+  },
+  {
+    "id": "ASL-5",
+    "framework": "Lab Safety Commitments",
+    "category": "Threshold Framework",
+    "short_name": "External review of thresholds",
+    "description": "The provider subjects its threshold definitions and assessment results to external review, whether by independent evaluators, auditors, government bodies, or AISIs.",
+    "scoring_guidance": {
+      "absent": "No external review of threshold framework or assessment results.",
+      "mentioned": "States external review exists or is planned. Example: 'We engage external reviewers for our safety assessments.'",
+      "partial": "Describes some external engagement (e.g., 'We shared evaluation results with AISI') but lacking detail on: scope of review, independence of reviewers, what feedback was received, or how feedback was incorporated.",
+      "thorough": "Comprehensive external review: (1) who reviews (named organizations or described qualifications), (2) scope of review (threshold definitions, evaluation methodology, assessment results, or all three), (3) independence guarantees, (4) summary of review findings, (5) how findings were incorporated, (6) commitment to ongoing external review."
+    },
+    "gold_examples": [
+      "A thorough disclosure would state: 'Our ASL evaluations are reviewed by [organization] with access to [scope]. Their review of Claude Opus 4.5 found [summary]. We [did/did not] modify our assessment based on their feedback because [reason].'"
+    ]
+  }
+]

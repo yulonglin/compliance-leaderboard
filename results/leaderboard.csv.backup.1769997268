@@ -1,0 +1,6 @@
+model,eu_code_of_practice_pct,stream_pct,lab_safety_pct,overall_pct
+claude-opus-4-5,70.27,64.29,77.78,69.58
+gemini-2-5-pro,65.77,54.76,75.56,63.75
+llama-3-1-405b,66.67,66.67,35.56,60.83
+gpt-4o,65.77,50.0,55.56,58.33
+deepseek-r1,53.15,63.1,42.22,54.58
