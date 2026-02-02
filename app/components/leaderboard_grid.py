@@ -4,6 +4,7 @@ Displays models with framework scores as circular gauges in a maximalist dashboa
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 from pathlib import Path
 
@@ -31,9 +32,6 @@ def render_leaderboard_grid(scores_data: list[dict]):
     # Sort by overall score descending
     models_data.sort(key=lambda x: x["overall"], reverse=True)
 
-    # Render CSS styles first
-    st.markdown(_get_grid_styles(), unsafe_allow_html=True)
-
     # Create grid container
     grid_html = '<div class="leaderboard-grid">'
 
@@ -43,8 +41,15 @@ def render_leaderboard_grid(scores_data: list[dict]):
 
     grid_html += '</div>'
 
-    # Render HTML grid after styles
-    st.markdown(grid_html, unsafe_allow_html=True)
+    # Combine CSS and HTML and render in iframe
+    # st.components.v1.html() provides full CSS support (animations, pseudo-elements, external fonts)
+    complete_html = _get_grid_styles() + grid_html
+
+    # Calculate dynamic height based on number of cards (roughly 400px per card on 2-column layout)
+    num_cards = len(models_data)
+    grid_height = max(600, (num_cards // 2 + 1) * 400)
+
+    components.html(complete_html, height=grid_height, scrolling=True)
 
 
 def _get_grid_styles() -> str:
