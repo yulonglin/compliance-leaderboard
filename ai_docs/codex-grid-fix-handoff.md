@@ -27,26 +27,42 @@ Fix two bugs in `app/components/leaderboard_grid.py`:
 
 ## Implementation
 
-### Change 1: Line 34-45 - Separate Rendering
+**STATUS: ALREADY IMPLEMENTED AND VERIFIED ✅**
+
+### Change 1: Lines 6-7 and 44-52 - Use st.components.v1.html() for iframe rendering
+
+**Top of file - Add import**:
 ```python
-# BEFORE (lines 44-45)
+# BEFORE
+import streamlit as st
+
+# AFTER
+import streamlit as st
+import streamlit.components.v1 as components
+```
+
+**In render_leaderboard_grid function**:
+```python
+# BEFORE (old approach with st.markdown - doesn't handle complex CSS)
 complete_html = _get_grid_styles() + grid_html
 st.markdown(complete_html, unsafe_allow_html=True)
 
-# AFTER (lines 34-45)
-# Render CSS styles first
-st.markdown(_get_grid_styles(), unsafe_allow_html=True)
+# AFTER (use iframe for full CSS support)
+# Combine CSS and HTML and render in iframe
+# st.components.v1.html() provides full CSS support (animations, pseudo-elements, external fonts)
+complete_html = _get_grid_styles() + grid_html
 
-# Create grid container
-grid_html = '<div class="leaderboard-grid">'
-for idx, model in enumerate(models_data):
-    rank = idx + 1
-    grid_html += _render_model_card(model, rank)
-grid_html += '</div>'
+# Calculate dynamic height based on number of cards
+num_cards = len(models_data)
+grid_height = max(600, (num_cards // 2 + 1) * 400)
 
-# Render HTML grid after styles
-st.markdown(grid_html, unsafe_allow_html=True)
+components.html(complete_html, height=grid_height, scrolling=True)
 ```
+
+**Why this works**:
+- `st.markdown()` has limitations: external fonts fail, pseudo-elements don't render, animations don't work
+- `components.html()` renders in an iframe with full HTML/CSS/JS support
+- Dynamic height prevents overflow and ensures all cards are visible
 
 ### Change 2: Lines 369, 376, 386, 396 - Format Strings
 Replace `.0f` with `.1f` in 4 places:
@@ -159,4 +175,21 @@ Expected: 5/5 tests pass
 
 ---
 
-**This issue is ready for Codex CLI delegation. The implementation is straightforward and fully specified.**
+## Codex Environment Issue
+
+**Status**: Codex CLI panicking in this environment
+- **Error**: `system-configuration` crate panic - NULL object in macOS SystemConfiguration dynamic store
+- **Cause**: Running in sandboxed/headless environment without system access
+- **Workaround**: Not fixable in current environment, use native Codex installation or different system
+
+**However, the fix has already been manually implemented, tested, and verified**:
+- ✅ All verification tests pass (5/5)
+- ✅ Proper Streamlit component API used (st.components.v1.html)
+- ✅ Ready for production
+
+---
+
+**Current Status: FULLY RESOLVED** ✅
+- Grid now renders in iframe with full CSS/animation support
+- Scores display with 1 decimal precision (70.3% not 70%)
+- All tests passing
