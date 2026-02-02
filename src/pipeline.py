@@ -66,21 +66,67 @@ def _extract_json(text: str) -> Dict:
     if not text:
         raise LlmResponseError("Empty response")
     start = text.find("{")
-    end = text.rfind("}")
-    if start == -1 or end == -1 or end <= start:
+    if start == -1:
         raise LlmResponseError("No JSON object found")
+
+    # Find matching closing brace by counting depth
+    depth = 0
+    in_string = False
+    escape = False
+    end = -1
+    for i in range(start, len(text)):
+        ch = text[i]
+        if escape:
+            escape = False
+            continue
+        if ch == "\\":
+            escape = True
+            continue
+        if ch == '"':
+            in_string = not in_string
+            continue
+        if not in_string:
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    end = i
+                    break
+
+    if end == -1:
+        raise LlmResponseError("No matching closing brace for JSON")
+
     payload = _escape_newlines_in_strings(text[start : end + 1])
     try:
         return json.loads(payload)
     except json.JSONDecodeError:
+        # Fix trailing commas
         normalized = re.sub(r",\s*([}\]])", r"\1", payload)
+
+        # Fix missing commas between top-level structures
+        normalized = re.sub(r'(\})\s*(\{)', r'\1,\2', normalized)
+        normalized = re.sub(r'(\])\s*(\[)', r'\1,\2', normalized)
+
+        # Fix missing commas after strings in arrays - this is the critical one
+        # Match: closing quote, optional whitespace, then { or [ or " (not followed by :)
+        normalized = re.sub(r'(")\s*(?=[\{\[])', r'\1,', normalized)
+        # Also handle string followed by string in array (most common case)
+        normalized = re.sub(r'(")\s+(")', r'\1,\2', normalized)
+
+        # Python boolean/None to JSON
         normalized = re.sub(r"\bTrue\b", "true", normalized)
         normalized = re.sub(r"\bFalse\b", "false", normalized)
         normalized = re.sub(r"\bNone\b", "null", normalized)
-        # Fix malformed keys with extra quotes: ""key"" or ""key" or "key""
+
+        # Fix malformed keys: ""key"" or ""key" or "key""
         normalized = re.sub(r'"+([a-zA-Z_][a-zA-Z0-9_]*)"*\s*:', r'"\1":', normalized)
-        # As last resort, remove ALL unescaped newlines/tabs outside of strings
-        # This is aggressive but necessary for LLM outputs
+
+        # Remove trailing empty string keys
+        normalized = re.sub(r',\s*"":', r'', normalized)
+        normalized = re.sub(r',\s*""\s*([}\]])', r'\1', normalized)
+
+        # Remove ALL unescaped newlines/tabs outside strings (last resort)
         in_string = False
         escape = False
         cleaned = []
@@ -95,7 +141,6 @@ def _extract_json(text: str) -> Dict:
                 in_string = not in_string
                 cleaned.append(ch)
             elif not in_string and ch in ("\n", "\r", "\t"):
-                # Skip whitespace outside strings
                 continue
             else:
                 cleaned.append(ch)
