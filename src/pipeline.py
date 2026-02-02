@@ -75,7 +75,8 @@ def _extract_json(text: str) -> Dict:
         normalized = re.sub(r"\bTrue\b", "true", normalized)
         normalized = re.sub(r"\bFalse\b", "false", normalized)
         normalized = re.sub(r"\bNone\b", "null", normalized)
-        normalized = re.sub(r'""([A-Za-z0-9_]+)""\s*:', r'"\1":', normalized)
+        # Fix malformed keys with extra quotes: ""key"" or ""key" or "key""
+        normalized = re.sub(r'"+([a-zA-Z_][a-zA-Z0-9_]*)"*\s*:', r'"\1":', normalized)
         try:
             return json.loads(normalized)
         except json.JSONDecodeError as exc:
