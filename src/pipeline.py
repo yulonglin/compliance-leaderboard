@@ -253,6 +253,18 @@ async def _score_requirement(
     cache: FileCache,
     semaphore: asyncio.Semaphore,
 ) -> RequirementScore:
+    # No evidence = score 0 (prevent guideline leakage)
+    if not quotes or not claims:
+        return RequirementScore(
+            requirement_id=requirement.id,
+            score=ScoreLevel.ABSENT,
+            justification="No supporting evidence found in model card.",
+            evidence=[],
+            confidence=1.0,
+            substantive=False,
+            substantive_reasoning="Absence of evidence.",
+        )
+
     claims_hash = _hash_key(json.dumps({"claims": claims, "quotes": quotes}, ensure_ascii=True))
     cache_key = _hash_key(
         f"{STAGE_B_MODEL}:{STAGE_B_PROMPT_VERSION}:{requirement.id}:{claims_hash}"
