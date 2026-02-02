@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 from app.utils import RESULTS_DIR
 
@@ -50,16 +51,23 @@ Model cards (PDF/HTML)
             st.dataframe(pd.DataFrame(disagreements), width="stretch")
 
     st.header("Frameworks & Standards")
-    st.markdown(
+    components.html(
         """
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
 .framework-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
     margin: 24px 0;
+    padding: 20px;
 }
 
 .framework-card {
@@ -184,7 +192,8 @@ Model cards (PDF/HTML)
     </div>
 </div>
 """,
-        unsafe_allow_html=True,
+        height=600,
+        scrolling=True,
     )
 
     st.header("Limitations")

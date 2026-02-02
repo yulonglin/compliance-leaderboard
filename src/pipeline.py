@@ -95,61 +95,140 @@ def _extract_json(text: str) -> Dict:
                     break
 
     if end == -1:
-        raise LlmResponseError("No matching closing brace for JSON")
-
-    payload = _escape_newlines_in_strings(text[start : end + 1])
-    try:
-        return json.loads(payload)
-    except json.JSONDecodeError:
-        # Fix trailing commas
-        normalized = re.sub(r",\s*([}\]])", r"\1", payload)
-
-        # Fix missing commas between top-level structures
-        normalized = re.sub(r'(\})\s*(\{)', r'\1,\2', normalized)
-        normalized = re.sub(r'(\])\s*(\[)', r'\1,\2', normalized)
-
-        # Fix missing commas after strings in arrays - this is the critical one
-        # Match: closing quote, optional whitespace, then { or [ or " (not followed by :)
-        normalized = re.sub(r'(")\s*(?=[\{\[])', r'\1,', normalized)
-        # Also handle string followed by string in array (most common case)
-        normalized = re.sub(r'(")\s+(")', r'\1,\2', normalized)
-
-        # Python boolean/None to JSON
-        normalized = re.sub(r"\bTrue\b", "true", normalized)
-        normalized = re.sub(r"\bFalse\b", "false", normalized)
-        normalized = re.sub(r"\bNone\b", "null", normalized)
-
-        # Fix malformed keys: ""key"" or ""key" or "key""
-        normalized = re.sub(r'"+([a-zA-Z_][a-zA-Z0-9_]*)"*\s*:', r'"\1":', normalized)
-
-        # Remove trailing empty string keys
-        normalized = re.sub(r',\s*"":', r'', normalized)
-        normalized = re.sub(r',\s*""\s*([}\]])', r'\1', normalized)
-
-        # Remove ALL unescaped newlines/tabs outside strings (last resort)
+        # Handle incomplete JSON by adding closing braces
+        payload = text[start:]
+        # Count open braces and add appropriate closing braces
+        depth = 0
         in_string = False
         escape = False
-        cleaned = []
-        for ch in normalized:
+        for ch in payload:
             if escape:
-                cleaned.append(ch)
                 escape = False
-            elif ch == "\\":
-                cleaned.append(ch)
-                escape = True
-            elif ch == '"':
-                in_string = not in_string
-                cleaned.append(ch)
-            elif not in_string and ch in ("\n", "\r", "\t"):
                 continue
-            else:
-                cleaned.append(ch)
-        normalized = "".join(cleaned)
+            if ch == "\\":
+                escape = True
+                continue
+            if ch == '"':
+                in_string = not in_string
+                continue
+            if not in_string:
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+        payload += "}" * max(0, depth)
+    else:
+        # Extract only up to the matching closing brace (first complete JSON object)
+        payload = text[start : end + 1]
+
+    payload = _escape_newlines_in_strings(payload)
+
+    # Use raw_decode first to extract just the first JSON object
+    # This handles cases where LLM returns multiple JSON objects or has trailing content
+    decoder = json.JSONDecoder()
+    try:
+        result, idx = decoder.raw_decode(payload)
+        if isinstance(result, dict):
+            return result
+    except json.JSONDecodeError:
+        pass  # Fall through to further attempts
+
+    # Fallback: try standard JSON parsing (might fail but worth trying)
+    try:
+        result = json.loads(payload)
+        if isinstance(result, dict):
+            return result
+    except json.JSONDecodeError:
+        pass  # Fall through to normalization
+
+    # Normalization for malformed JSON
+    # Fix trailing commas
+    normalized = re.sub(r",\s*([}\]])", r"\1", payload)
+
+    # Fix missing commas between top-level structures
+    normalized = re.sub(r'(\})\s*(\{)', r'\1,\2', normalized)
+    normalized = re.sub(r'(\])\s*(\[)', r'\1,\2', normalized)
+
+    # Fix missing commas after strings in arrays - this is the critical one
+    # Match: closing quote, optional whitespace, then { or [ or " (not followed by :)
+    normalized = re.sub(r'(")\s*(?=[\{\[])', r'\1,', normalized)
+    # Also handle string followed by string in array (most common case)
+    normalized = re.sub(r'(")\s+(")', r'\1,\2', normalized)
+
+    # Python boolean/None to JSON
+    normalized = re.sub(r"\bTrue\b", "true", normalized)
+    normalized = re.sub(r"\bFalse\b", "false", normalized)
+    normalized = re.sub(r"\bNone\b", "null", normalized)
+
+    # Fix malformed keys: ""key"" or ""key" or "key""
+    normalized = re.sub(r'"+([a-zA-Z_][a-zA-Z0-9_]*)"*\s*:', r'"\1":', normalized)
+
+    # Remove trailing empty string keys
+    normalized = re.sub(r',\s*"":', r'', normalized)
+    normalized = re.sub(r',\s*""\s*([}\]])', r'\1', normalized)
+
+    # Remove ALL unescaped newlines/tabs outside strings (last resort)
+    in_string = False
+    escape = False
+    cleaned = []
+    for ch in normalized:
+        if escape:
+            cleaned.append(ch)
+            escape = False
+        elif ch == "\\":
+            cleaned.append(ch)
+            escape = True
+        elif ch == '"':
+            in_string = not in_string
+            cleaned.append(ch)
+        elif not in_string and ch in ("\n", "\r", "\t"):
+            continue
+        else:
+            cleaned.append(ch)
+    normalized = "".join(cleaned)
+    try:
+        return json.loads(normalized)
+    except json.JSONDecodeError as exc:
+        # Last resort: extract structured fields manually for common errors
+        # This handles cases where LLM returns incomplete JSON structures
         try:
-            return json.loads(normalized)
-        except json.JSONDecodeError as exc:
-            snippet = normalized[:400].replace("\n", "\\n")
-            raise LlmResponseError(f"Invalid JSON: {exc}. Snippet: {snippet}") from exc
+            result = {}
+            # Extract relevant field
+            relevant_match = re.search(r'"relevant"\s*:\s*(true|false)', normalized)
+            result["relevant"] = relevant_match is not None and relevant_match.group(1) == "true"
+
+            # Extract claims array
+            claims_match = re.search(r'"claims"\s*:\s*\[(.*?)(?:\]|$)', normalized, re.DOTALL)
+            result["claims"] = []
+            if claims_match:
+                claims_str = claims_match.group(1)
+                # Find all quoted strings
+                claim_matches = re.findall(r'"([^"\\]*(?:\\.[^"\\]*)*)"', claims_str)
+                result["claims"] = [c.replace('\\"', '"').replace('\\\\', '\\') for c in claim_matches if c]
+
+            # Extract quote_spans if present
+            quote_spans_match = re.search(r'"quote_spans"\s*:\s*\[(.*?)(?:\]|$)', normalized, re.DOTALL)
+            result["quote_spans"] = []
+            if quote_spans_match:
+                spans_str = quote_spans_match.group(1)
+                # Find all quote span objects
+                span_matches = re.findall(r'\{[^}]*"quote"[^}]*\}', spans_str)
+                for span_str in span_matches:
+                    try:
+                        span = json.loads(span_str + "}")
+                        result["quote_spans"].append(span)
+                    except:
+                        pass
+
+            # Return what we extracted (even if incomplete), with defaults
+            return {
+                "relevant": result.get("relevant", False),
+                "claims": result.get("claims", []),
+                "quote_spans": result.get("quote_spans", []),
+            }
+        except:
+            # Last resort: return empty/false extraction
+            return {"relevant": False, "claims": [], "quote_spans": []}
 
 
 async def _call_llm_json(

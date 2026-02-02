@@ -43,6 +43,11 @@ def render() -> None:
 
     df = df.copy()
     df.insert(0, "rank", range(1, len(df) + 1))
+
+    # Format percentage columns to 1 decimal place
+    for col in ["eu_code_of_practice_pct", "stream_pct", "lab_safety_pct", "overall_pct"]:
+        df[col] = df[col].apply(lambda x: round(x, 1))
+
     df = df.rename(
         columns={
             "model": "Model",

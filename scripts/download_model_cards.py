@@ -207,7 +207,7 @@ if __name__ == "__main__":
         "gpt-4o": "https://cdn.openai.com/gpt-4o-system-card.pdf",
         "gpt-5-2": "https://cdn.openai.com/pdf/3a4153c8-c748-4b71-8e31-aecbde944f8d/oai_5_2_system-card.pdf",
         "gemini-2-5-pro": "https://storage.googleapis.com/deepmind-media/gemini/gemini_v2_5_report.pdf",
-        "gemini-3-pro": "https://storage.googleapis.com/deepmind-media/gemini/gemini_3_pro_report.pdf",
+        "gemini-3-pro": "https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-3-Pro-Model-Card.pdf",
         "llama-3-1-405b": "https://arxiv.org/pdf/2407.21783",
         "deepseek-r1": "https://arxiv.org/pdf/2501.12948",
     }
