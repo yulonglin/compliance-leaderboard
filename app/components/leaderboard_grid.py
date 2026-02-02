@@ -31,9 +31,6 @@ def render_leaderboard_grid(scores_data: list[dict]):
     # Sort by overall score descending
     models_data.sort(key=lambda x: x["overall"], reverse=True)
 
-    # Render CSS and HTML for the grid
-    st.markdown(_get_grid_styles(), unsafe_allow_html=True)
-
     # Create grid container
     grid_html = '<div class="leaderboard-grid">'
 
@@ -42,7 +39,10 @@ def render_leaderboard_grid(scores_data: list[dict]):
         grid_html += _render_model_card(model, rank)
 
     grid_html += '</div>'
-    st.markdown(grid_html, unsafe_allow_html=True)
+
+    # Combine CSS and HTML into a single markdown call
+    complete_html = _get_grid_styles() + grid_html
+    st.markdown(complete_html, unsafe_allow_html=True)
 
 
 def _get_grid_styles() -> str:
