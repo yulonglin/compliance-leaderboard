@@ -33,6 +33,7 @@ _PARA_SPLIT_RE = re.compile(r"\n\s*\n")
 
 
 def _escape_newlines_in_strings(text: str) -> str:
+    """Escape literal newlines inside JSON string values."""
     output: List[str] = []
     in_string = False
     escape = False
@@ -49,8 +50,9 @@ def _escape_newlines_in_strings(text: str) -> str:
             in_string = not in_string
             output.append(ch)
             continue
+        # Replace literal newlines/carriage returns with space (preserves JSON validity)
         if in_string and ch in ("\n", "\r"):
-            output.append("\\n")
+            output.append(" ")
             continue
         output.append(ch)
     return "".join(output)
@@ -77,6 +79,27 @@ def _extract_json(text: str) -> Dict:
         normalized = re.sub(r"\bNone\b", "null", normalized)
         # Fix malformed keys with extra quotes: ""key"" or ""key" or "key""
         normalized = re.sub(r'"+([a-zA-Z_][a-zA-Z0-9_]*)"*\s*:', r'"\1":', normalized)
+        # As last resort, remove ALL unescaped newlines/tabs outside of strings
+        # This is aggressive but necessary for LLM outputs
+        in_string = False
+        escape = False
+        cleaned = []
+        for ch in normalized:
+            if escape:
+                cleaned.append(ch)
+                escape = False
+            elif ch == "\\":
+                cleaned.append(ch)
+                escape = True
+            elif ch == '"':
+                in_string = not in_string
+                cleaned.append(ch)
+            elif not in_string and ch in ("\n", "\r", "\t"):
+                # Skip whitespace outside strings
+                continue
+            else:
+                cleaned.append(ch)
+        normalized = "".join(cleaned)
         try:
             return json.loads(normalized)
         except json.JSONDecodeError as exc:
