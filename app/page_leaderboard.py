@@ -1,6 +1,9 @@
+import json
 import streamlit as st
+from pathlib import Path
 
 from app.utils import load_leaderboard, score_color
+from app.components.leaderboard_grid import render_leaderboard_grid
 
 
 def _style_pct(value: float) -> str:
@@ -18,6 +21,20 @@ def render() -> None:
         "This tool measures disclosure quality, not real-world compliance. "
         "Scores reflect what labs publish, not what they practice."
     )
+
+    # Try to load raw scores for grid visualization
+    scores_path = Path("results/scores.json")
+    if scores_path.exists():
+        try:
+            scores_data = json.loads(scores_path.read_text())
+            st.markdown("### Compliance Score Matrix")
+            render_leaderboard_grid(scores_data)
+        except Exception as e:
+            st.error(f"Error loading grid: {e}")
+
+    # Show traditional table view
+    st.markdown("---")
+    st.markdown("### Detailed Leaderboard Table")
 
     df = load_leaderboard()
     if df.empty:
