@@ -31,6 +31,9 @@ def render_leaderboard_grid(scores_data: list[dict]):
     # Sort by overall score descending
     models_data.sort(key=lambda x: x["overall"], reverse=True)
 
+    # Render CSS styles first
+    st.markdown(_get_grid_styles(), unsafe_allow_html=True)
+
     # Create grid container
     grid_html = '<div class="leaderboard-grid">'
 
@@ -40,9 +43,8 @@ def render_leaderboard_grid(scores_data: list[dict]):
 
     grid_html += '</div>'
 
-    # Combine CSS and HTML into a single markdown call
-    complete_html = _get_grid_styles() + grid_html
-    st.markdown(complete_html, unsafe_allow_html=True)
+    # Render HTML grid after styles
+    st.markdown(grid_html, unsafe_allow_html=True)
 
 
 def _get_grid_styles() -> str:
@@ -343,7 +345,7 @@ def _get_grid_styles() -> str:
 def _render_model_card(model: dict, rank: int) -> str:
     """Render a single model card."""
 
-    # Validate and format scores
+    # Validate and format scores (rounded to 1 decimal place)
     cop_score = max(0, min(100, model["cop"] or 0))
     stream_score = max(0, min(100, model["stream"] or 0))
     lab_score = max(0, min(100, model["lab_safety"] or 0))
@@ -366,14 +368,14 @@ def _render_model_card(model: dict, rank: int) -> str:
 
         <div class="overall-score">
             <div class="overall-label">Overall</div>
-            <div class="overall-value">{overall_score:.0f}%</div>
+            <div class="overall-value">{overall_score:.1f}%</div>
         </div>
 
         <div class="compliance-gauges">
             <div class="gauge">
                 <div class="gauge-label">
                     <span class="gauge-name">🇪🇺 EU AI Act</span>
-                    <span class="gauge-value">{cop_score:.0f}%</span>
+                    <span class="gauge-value">{cop_score:.1f}%</span>
                 </div>
                 <div class="gauge-bar">
                     <div class="gauge-fill cop" style="width: {cop_score}%;"></div>
@@ -383,7 +385,7 @@ def _render_model_card(model: dict, rank: int) -> str:
             <div class="gauge">
                 <div class="gauge-label">
                     <span class="gauge-name">🧬 STREAM ChemBio</span>
-                    <span class="gauge-value">{stream_score:.0f}%</span>
+                    <span class="gauge-value">{stream_score:.1f}%</span>
                 </div>
                 <div class="gauge-bar">
                     <div class="gauge-fill stream" style="width: {stream_score}%;"></div>
@@ -393,7 +395,7 @@ def _render_model_card(model: dict, rank: int) -> str:
             <div class="gauge">
                 <div class="gauge-label">
                     <span class="gauge-name">🔬 Lab Safety</span>
-                    <span class="gauge-value">{lab_score:.0f}%</span>
+                    <span class="gauge-value">{lab_score:.1f}%</span>
                 </div>
                 <div class="gauge-bar">
                     <div class="gauge-fill lab" style="width: {lab_score}%;"></div>
