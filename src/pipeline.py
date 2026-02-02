@@ -75,6 +75,7 @@ def _extract_json(text: str) -> Dict:
         normalized = re.sub(r"\bTrue\b", "true", normalized)
         normalized = re.sub(r"\bFalse\b", "false", normalized)
         normalized = re.sub(r"\bNone\b", "null", normalized)
+        normalized = re.sub(r'""([A-Za-z0-9_]+)""\s*:', r'"\1":', normalized)
         try:
             return json.loads(normalized)
         except json.JSONDecodeError as exc:
@@ -82,7 +83,11 @@ def _extract_json(text: str) -> Dict:
             raise LlmResponseError(f"Invalid JSON: {exc}. Snippet: {snippet}") from exc
 
 
-async def _call_llm_json(model: str, messages: List[Dict[str, str]]) -> Dict:
+async def _call_llm_json(
+    model: str,
+    messages: List[Dict[str, str]],
+    response_format: type | dict | None = None,
+) -> Dict:
     async for attempt in AsyncRetrying(
         wait=wait_exponential(min=1, max=20),
         stop=stop_after_attempt(3),
@@ -90,7 +95,12 @@ async def _call_llm_json(model: str, messages: List[Dict[str, str]]) -> Dict:
         reraise=True,
     ):
         with attempt:
-            response = await acompletion(model=model, messages=messages, temperature=0)
+            response = await acompletion(
+                model=model,
+                messages=messages,
+                temperature=0,
+                response_format=response_format or {"type": "json_object"},
+            )
             content = response.choices[0].message.content
             return _extract_json(content)
     raise LlmResponseError("LLM call failed after retries")
@@ -114,7 +124,8 @@ def _stage_a_prompt(requirement: Requirement, chunk_text: str) -> List[Dict[str,
         "Rules:\n"
         "- Do NOT restate the requirement text.\n"
         "- If there is no direct evidence in the chunk, set relevant=false and return empty lists.\n"
-        "- Provide offsets as 0-indexed character positions in the chunk text (end is exclusive).\n\n"
+        "- Provide offsets as 0-indexed character positions in the chunk text (end is exclusive).\n"
+        "- All strings must be single-line; replace any newlines with spaces.\n\n"
         "Return JSON with keys: relevant (boolean), claims (list of strings), "
         "quote_spans (list of objects with keys: quote, start, end)."
     )
@@ -148,6 +159,7 @@ def _stage_b_prompt(requirement: Requirement, claims: List[str], quotes: List[st
         "Rules:\n"
         "- Use only the provided evidence quotes; do not paraphrase or invent evidence.\n"
         "- Do NOT restate the requirement text as evidence.\n\n"
+        "- All strings must be single-line; replace any newlines with spaces.\n\n"
         "Task: Assign a score 0-3 and justify using the evidence. "
         "Also assess whether the disclosure appears SUBSTANTIVE (true=genuine detail, specific methods, "
         "concrete results) or PERFORMATIVE (false=vague, boilerplate, no specifics).\n\n"
