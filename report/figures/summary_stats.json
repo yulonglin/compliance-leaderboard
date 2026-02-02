@@ -1,0 +1,10 @@
+{
+  "top_model": "claude-opus-4-5",
+  "top_score": 69.58,
+  "bottom_model": "deepseek-r1",
+  "bottom_score": 54.58,
+  "eu_avg": 64.3,
+  "stream_avg": 59.8,
+  "lab_avg": 57.3,
+  "biosafety_gap": 4.6
+}

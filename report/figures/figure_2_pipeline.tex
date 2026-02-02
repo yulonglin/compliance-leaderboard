@@ -1,0 +1,56 @@
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=1.0, node distance=3cm, auto]
+  % Define styles
+  \tikzstyle{box} = [rectangle, draw, fill=white, text width=2.8cm, text centered, rounded corners, minimum height=1cm]
+  \tikzstyle{arrow} = [thick, ->, >=stealth, color=black]
+  \tikzstyle{stage} = [fill=gray!20, rounded corners, inner sep=10pt, text width=8cm]
+
+  % Nodes
+  \node[box, fill=blue!20] (input) {Model Card \\ (Markdown)};
+
+  \node[stage, below of=input, yshift=-1.5cm, text width=9cm, minimum height=4cm] (stage_a) {
+    \textbf{Stage A: Claim Extraction} \\[0.3cm]
+    LLM extracts requirement-specific claims \\
+    Input: Full model card + requirement \\
+    Output: Relevant claim text
+  };
+
+  \node[box, below of=stage_a, yshift=-2.5cm] (claims) {Extracted Claims \\  (for each requirement)};
+
+  \node[stage, below of=claims, yshift=-1.5cm, text width=9cm, minimum height=4cm] (stage_b) {
+    \textbf{Stage B: Scoring \& Evidence} \\[0.3cm]
+    LLM scores claim on 0-3 scale \\
+    Input: Claim + requirement + context \\
+    Output: Score (0-3) + quote span
+  };
+
+  \node[box, below of=stage_b, yshift=-2.5cm, fill=green!20] (scores) {Scored Requirements \\ (0-3 scale)};
+
+  \node[stage, below of=scores, yshift=-1.5cm, text width=9cm, minimum height=3.5cm] (stage_c) {
+    \textbf{Stage C: Aggregation} \\[0.3cm]
+    Compute framework scores \\
+    (EU CoP, STREAM, Lab Safety) \\
+    Generate leaderboard ranking
+  };
+
+  \node[box, below of=stage_c, yshift=-2.2cm, fill=red!20] (output) {Leaderboard \\ \& Rankings};
+
+  % Arrows
+  \draw[arrow] (input) -- (stage_a);
+  \draw[arrow] (stage_a) -- (claims);
+  \draw[arrow] (claims) -- (stage_b);
+  \draw[arrow] (stage_b) -- (scores);
+  \draw[arrow] (scores) -- (stage_c);
+  \draw[arrow] (stage_c) -- (output);
+
+  % Side annotations
+  \node[anchor=west, font=\small] at (stage_a.east) [xshift=0.5cm] {google/ \\ gemini-2.5-};
+  \node[anchor=west, font=\small] at (stage_b.east) [xshift=0.5cm] {anthropic/ \\ claude-sonnet-};
+  \node[anchor=west, font=\small] at (stage_c.east) [xshift=0.5cm] {averaging};
+
+\end{tikzpicture}
+\caption{Three-stage pipeline: claims extracted from model cards, scored for compliance, and aggregated into framework-level scores.}
+\label{fig:pipeline}
+\end{figure}
