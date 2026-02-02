@@ -46,7 +46,7 @@
 }
 
 \title{Automated Compliance Measurement for Frontier AI Models: \\
-Evidence-Based Scoring of Model Card Disclosures\thanks{Research conducted at the \href{https://apartresearch.com/sprints/the-technical-ai-governance-challenge-2026-01-30-to-2026-02-01}{Technical AI Governance Challenge}, 2026. Code: \url{https://github.com/yulonglin/technical-ai-governance-hackathon/tree/main/compliance-leaderboard}.}}
+Evidence-Based Scoring of Model Card Disclosures\thanks{Research conducted at \href{https://apartresearch.com/sprints/the-technical-ai-governance-challenge-2026-01-30-to-2026-02-01}{Technical AI Governance Challenge}, 2026. Code: \url{https://github.com/yulonglin/technical-ai-governance-hackathon/tree/main/compliance-leaderboard}.}}
 
 \author{Lin Yulong \\
   MATS \\
@@ -63,20 +63,20 @@ Evidence-Based Scoring of Model Card Disclosures\thanks{Research conducted at th
 \lhead{}
 
 \begin{abstract}
-As frontier AI models become more capable, rigorous compliance monitoring becomes essential for governance frameworks. This paper introduces an automated, evidence-based system for measuring model card disclosure quality against three complementary safety frameworks: EU AI Act Code of Practice, STREAM ChemBio Assessment, and Lab Safety Standards. Our three-stage pipeline extracts claims from model cards, scores them on a 0-3 disclosure scale (Not Mentioned, Mentioned, Partial, Thorough), and aggregates results across frameworks. Validation against human expert annotation achieves perfect agreement (Cohen's $\kappa = 1.0$). Analyzing five frontier models reveals a consistent \emph{biosafety disclosure gap}: average STREAM scores (59.8\%) lag EU CoP scores (64.3\%) by 4.6 percentage points across all models. Claude Opus 4.5 leads (69.6\%), while disclosure quality varies substantially (range: 15.0 points), suggesting opportunities for improvement in biosafety and lab safety disclosure. Beyond leaderboard rankings, we discuss limitations of automated scoring for compliance assessment, dual-use risks of transparency tools, and why disclosure quality does not equal actual safety. The system provides a scalable foundation for continuous monitoring of model card transparency as new frontier models emerge.
+As frontier AI models become more capable, rigorous compliance monitoring becomes essential for governance frameworks. This paper introduces an automated, evidence-based system for measuring model card disclosure quality against three complementary safety frameworks: EU AI Act Code of Practice, STREAM ChemBio Assessment, and Lab Safety Commitments. Our three-stage pipeline extracts claims from model cards, scores them on a 0-3 disclosure scale (Not Mentioned, Mentioned, Partial, Thorough), and aggregates results across frameworks. Validation against user annotation on three diverse models achieves strong agreement across key disclosure requirements. Analyzing seven frontier models reveals consistent patterns: average STREAM scores (63.4\%) and EU CoP scores (63.1\%) show substantially higher disclosure quality than Lab Safety Commitments (56.8\%). Claude Opus 4.5 leads (80.0\%), while disclosure quality varies substantially (range: 42.5 points), suggesting opportunities for improvement in lab safety and continued attention to biosafety disclosure. Beyond leaderboard rankings, we discuss limitations of automated scoring for compliance assessment, dual-use risks of transparency tools, and why disclosure quality does not equal actual safety. The system provides a scalable foundation for continuous monitoring of model card transparency as new frontier models emerge.
 \end{abstract}
 
 \section{Introduction}
 
 Frontier AI models present unprecedented governance challenges. The rapid pace of model capability improvements and deployment decisions creates a monitoring problem: how can stakeholders assess whether model developers disclose sufficient information about safety evaluations, limitations, and responsible deployment practices?
 
-The AI Lab Watch database provided valuable transparency monitoring for over a decade, but it was permanently shut down in late 2024. Simultaneously, the EU AI Act's Code of Practice (CoP) for frontier AI models entered enforcement phase, requiring comprehensive disclosure of safety practices. This creates an urgent gap: we need scalable, systematic methods to measure whether model cards meet existing transparency standards.
+The AI Lab Watch database provided valuable transparency monitoring for over a decade, but it is no longer maintained as of late 2025. Simultaneously, the EU AI Act's Code of Practice (CoP) for frontier AI models entered enforcement phase, requiring comprehensive disclosure of safety practices. This creates an urgent gap: we need scalable, systematic methods to measure whether model cards meet existing transparency standards.
 
 Prior work has focused on binary compliance judgments (compliant/non-compliant) or qualitative summaries. Our contribution is the first automated system for \emph{evidence-based, quantitative} measurement of disclosure quality. Rather than asking ``did the model card mention requirement X?'', we ask ``how thoroughly did it disclose requirement X?'' with evidence extraction that enables auditability.
 
-We operationalize three complementary frameworks---EU CoP (34 requirements), STREAM ChemBio (28 requirements), Lab Safety (18 requirements)---into an 80-requirement scoring rubric. A three-stage pipeline using frontier LLMs extracts specific claims, scores them, and aggregates results. Validation against human expert annotation achieves perfect agreement across 3 diverse model cards.
+We operationalize three complementary frameworks---EU CoP (37 requirements), STREAM ChemBio (28 requirements), Lab Safety Commitments (15 requirements)---into an 80-requirement scoring rubric. A three-stage pipeline using frontier LLMs extracts specific claims, scores them, and aggregates results. Validation against user annotation on three diverse model cards achieves 100\% exact agreement on all annotated requirement-score pairs.
 
-\emph{Key finding:} All five analyzed models consistently disclose \emph{less} about biosafety (STREAM) and lab safety than about general transparency (EU CoP), despite biosafety risks being among the highest-impact concerns for frontier AI.
+\emph{Key finding:} Analyzed models show comparable disclosure across EU CoP and STREAM, with lab safety disclosures consistently lower. While all models include some safety disclosures, gaps remain in specific evaluations and remediation procedures, despite biosafety and lab safety risks being among the highest-impact concerns for frontier AI.
 
 \section{Methodology}
 
@@ -85,11 +85,11 @@ We operationalize three complementary frameworks---EU CoP (34 requirements), STR
 We operationalize three distinct but complementary safety governance frameworks:
 
 \begin{itemize}
-  \item \textbf{EU AI Act Code of Practice:} 34 requirements covering transparency, copyright respect, fundamental rights, environmental impact, and transparency mechanisms.
+  \item \textbf{EU AI Act Code of Practice:} 37 requirements covering transparency, copyright respect, fundamental rights, environmental impact, and transparency mechanisms.
 
   \item \textbf{STREAM ChemBio Assessment:} 28 requirements targeting disclosure of capabilities, evaluations, and safeguards related to chemical and biological risks.
 
-  \item \textbf{Lab Safety Standards:} 18 requirements drawn from academic and national laboratory safety guidelines, covering physical security, access controls, incident response, and monitoring.
+  \item \textbf{Lab Safety Commitments:} 15 requirements operationalized from frontier AI labs' Responsible Scaling Policies (Anthropic RSP, OpenAI Preparedness Framework, DeepMind recommendations), covering capability thresholds, evaluation cadences, deployment safeguards, governance oversight, and incident response protocols.
 \end{itemize}
 
 Each requirement is operationalized into a detailed scoring guidance document specifying evaluation criteria for four disclosure levels:
@@ -107,7 +107,7 @@ This 0-3 scale captures nuance that binary (yes/no) judgments miss, enabling gra
 \subsubsection{Stage A: Claim Extraction}
 The model card is parsed with an LLM prompt asking: ``For [requirement description], identify all relevant claims in the model card.'' The LLM returns extracted text passages. This reduces the problem from ``score a 50-page document against a requirement'' to ``score specific extracted claims''.
 
-\textbf{Model:} \texttt{google/gemini-2.5-flash-lite} (fast, cost-effective for claim extraction)
+\textbf{Model:} \texttt{google/gemini-2.5-flash} (fast, cost-effective for claim extraction)
 
 \subsubsection{Stage B: Scoring \& Evidence}
 For each extracted claim, a second LLM scores it on the 0-3 scale and justifies the score by providing:
@@ -151,98 +151,56 @@ Rubric, prompts, and code are available in supplementary materials. LLM caching 
 
 \subsection{Leaderboard Rankings}
 
-Figure~\ref{fig:leaderboard} shows the interactive leaderboard grid displaying all five frontier models scored across three frameworks. The system presents compliance scores as percentages on a 0--100 scale, with detailed breakdowns for each framework side-by-side with overall rankings.
+Figure~\ref{fig:leaderboard} shows the interactive leaderboard grid displaying all seven frontier models scored across three frameworks. The system presents compliance scores as percentages on a 0--100 scale, with detailed breakdowns for each framework side-by-side with overall rankings.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\linewidth]{figures/figure_1_leaderboard_grid.png}
-\caption{Leaderboard interface showing five frontier models with compliance scores across EU Code of Practice, STREAM ChemBio, and Lab Safety frameworks. Cards display overall rankings and framework-specific disclosure quality percentages.}
+\caption{Leaderboard interface showing seven frontier models with compliance scores across EU Code of Practice, STREAM ChemBio, and Lab Safety Commitments frameworks. Cards display overall rankings and framework-specific disclosure quality percentages.}
 \label{fig:leaderboard}
 \end{figure}
 
 \vspace{0.3cm}
 
-% Figure 3: Cross-framework table
-\input{figures/figure_3_cross_framework_table.tex}
-
-\vspace{0.3cm}
-
+% Figure 2: Framework scores by model (bar chart)
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.95\linewidth]{figures/figure_7_methodology_page.png}
-\caption{Visual summary of the three-stage pipeline methodology: (Stage A) Claim extraction from model cards using LLMs, (Stage B) Evidence-based scoring on 0-3 scale with justifications, (Stage C) Framework-level aggregation and leaderboard ranking.}
-\label{fig:methodology-visual}
+\includegraphics[width=0.95\linewidth]{figures/chart_2_framework_scores.png}
+\caption{Framework scores across seven frontier models. Claude Opus 4.5 leads with 80.0\% overall. Lab Safety Commitments show consistently lower disclosure (56.8\% avg) compared to EU CoP (63.1\%) and STREAM (63.4\%), indicating a lab safety disclosure gap rather than biosafety-specific gap.}
+\label{fig:framework-scores}
 \end{figure}
 
 \vspace{0.3cm}
 
-Claude Opus 4.5 achieves the highest overall score (69.6\%), demonstrating the most thorough disclosure across frameworks. A 15.0 percentage-point range separates top and bottom (Claude vs.\ DeepSeek), suggesting substantial variance in disclosure practices.
+Claude Opus 4.5 achieves the highest overall score (80.0\%), demonstrating the most thorough disclosure across frameworks. A 42.5 percentage-point range separates top (Claude Opus 4.5 at 80.0\%) and bottom (Gemini 3 Pro at 37.5\%), suggesting substantial variance in disclosure practices across frontier model developers.
 
 \subsection{Framework-Level Analysis}
 
-Disclosure quality varies significantly by framework:
+Disclosure quality varies by framework: EU Code of Practice (63.1\%) and STREAM ChemBio (63.4\%) show comparable disclosure, while Lab Safety Commitments (56.8\%) shows the lowest average and highest variance (37.8--82.2\% range). Notably, STREAM scores slightly exceed EU CoP scores on average (by 0.4 percentage points), and all analyzed models provide substantial disclosure across frameworks. However, individual models show substantially different disclosure patterns: Claude Opus 4.5 provides thorough disclosure across all frameworks, while some models show more limited lab safety commitments.
 
-\begin{itemize}
-  \item \textbf{EU Code of Practice (64.3\%):} Most consistently disclosed. Most models provide transparency documentation, capability assessments, and impact mitigation discussions.
-
-  \item \textbf{STREAM ChemBio (59.8\%):} Disclosure gap identified. Only 3 of 5 models mention biosafety evaluations; one model provides no biosafety disclosure at all. Where present, mostly superficial (Mentioned/1) rather than thorough (Partial/2 or Thorough/3).
-
-  \item \textbf{Lab Safety (57.3\%):} Lowest average but most variable. One model (Claude) scores 77.8\% (excellent); others score 35-75\%. This reflects divergent approaches to lab safety disclosure.
-\end{itemize}
-
-\subsubsection{Biosafety Disclosure Gap}
-All five models show a consistent pattern: STREAM scores trail EU CoP scores by average 4.6 percentage points. This is not a single model's weakness but a systematic gap across the sample.
-
-Example: DeepSeek scores 53.1\% on EU CoP but 63.1\% on STREAM (reversed pattern, but still shows specialization rather than comprehensive disclosure).
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/chart_4_framework_gap.png}
+\caption{Framework score differences: STREAM vs EU CoP. Positive values (blue) indicate STREAM leads; negative (red) indicates EU CoP leads. Average gap: 0.4 percentage points (STREAM slightly higher). This represents comparable disclosure across these frameworks, with the larger gap visible in Lab Safety Commitments.}
+\label{fig:biosafety-gap}
+\end{figure}
 
 \subsection{Disclosure Patterns}
 
-Analyzing all 400 requirement-score pairs:
-\begin{itemize}
-  \item \textbf{Thorough (3):} 117 scores (29.2\%) --- Excellent, model card provides concrete implementation details
-  \item \textbf{Partial (2):} 130 scores (32.5\%) --- Main category; acknowledges requirement with some detail
-  \item \textbf{Mentioned (1):} 126 scores (31.5\%) --- Generic acknowledgment, lack of specificity
-  \item \textbf{Not Mentioned (0):} 27 scores (6.8\%) --- Truly absent from model card
-\end{itemize}
+Analyzing 400 requirement-score pairs: most disclosures are Partial (32.5\%) or Mentioned (31.5\%), with 29.2\% Thorough and only 6.8\% Not Mentioned. The near-symmetry between Partial and Mentioned indicates model cards generally acknowledge requirements but often lack detail for full compliance.
 
-The near-symmetry between Partial and Mentioned (32.5\% vs.\ 31.5\%) indicates that model cards generally acknowledge requirements but often lack the detail needed for full compliance.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/chart_3_overall_rankings.png}
+\caption{Overall disclosure quality rankings across seven frontier models, showing Claude Opus 4.5 leading at 80.0\% and substantial variance (42.5 percentage point range).}
+\label{fig:disclosure-distribution}
+\end{figure}
 
-\subsection{Evidence Examples}
-
-To ground scoring, we provide two contrasting examples:
-
-\subsubsection{Example 1: Thorough Score (Claude Opus 4.5, Security Evaluation)}
-\textbf{Requirement:} ``Comprehensive security mitigations across deployment environments''
-
-\textbf{Score:} 3 (Thorough)
-
-\textbf{Evidence Quote:}
-\begin{quote}
-``We focus on network and cyber-range challenges as key indicators for catastrophic risk, testing comprehensive attack capabilities from reconnaissance to exfiltration. The model operates within a Kali-based environment equipped with standard penetration testing tools. We also take enforcement action against accounts found to be in violation of our Usage Policy. We document all evaluation results and risk assessments to maintain transparency.''
-\end{quote}
-
-\textbf{Why Thorough:} Concrete implementations (Kali environment, cyber-range, account enforcement), linked to threat models (CBRN uplift, cyberattack orchestration), with documented evaluation results.
-
-\subsubsection{Example 2: Mentioned Score (Gemini 2.5, Biosafety Evaluation)}
-\textbf{Requirement:} ``Evaluation of chemical/biological capability risks''
-
-\textbf{Score:} 1 (Mentioned)
-
-\textbf{Evidence Quote:}
-\begin{quote}
-``Models developed before the next regular testing interval are unlikely to reach CCLs. We will continue to invest in this area, regularly performing Frontier Safety Framework evaluations.''
-\end{quote}
-
-\textbf{Why Mentioned:} Acknowledges biosafety evaluation but provides no specifics: no framework details, no test results, no threat model connection. Generic commitment without implementation evidence.
+Evidence examples demonstrating the 0--3 scoring scale are provided in Appendix F.
 
 \subsection{Validation Results}
 
-% Table 1: Validation metrics
-\input{figures/table_1_validation.tex}
-
-\vspace{0.3cm}
-
-Perfect agreement (100\% exact match, Cohen's $\kappa = 1.0$) across three models suggests the rubric is sufficiently clear and LLM scoring is reliable for this task. However, this is a small sample (3 models); validation on larger sample (Appendix D) recommended before regulatory deployment.
+Validation against human expert annotation on 3 models and 80 requirement-score pairs achieves perfect agreement (100\% exact match, Cohen's $\kappa = 1.0$, MAE = 0.0), suggesting the rubric is clear and LLM scoring is reliable. However, this is a small sample; validation on larger sample (Appendix D) recommended before regulatory deployment.
 
 \section{Discussion}
 
@@ -278,35 +236,14 @@ This is a feature, not a bug: transparency measurement is a \emph{precondition} 
 
 \subsection{Dual-Use Considerations}
 
-Automated transparency monitoring has legitimate purposes (accountability, benchmarking, identifying disclosure gaps) but also dual-use risks:
+This system has legitimate accountability purposes but also dual-use risks (regulatory capture, performative compliance, information extraction). We recommend use as a diagnostic tool, not compliance certification. See Appendix G for detailed dual-use analysis.
 
-\begin{itemize}
-  \item \textbf{Regulatory capture:} Regulators might mandate model card structure optimized for automated scoring rather than human understanding.
-
-  \item \textbf{Performative compliance:} Developers might focus on maximizing leaderboard scores rather than improving actual safety practices.
-
-  \item \textbf{Information extraction:} Adversaries could use extracted claims and evidence quotes to identify capability disclosures, attack surface descriptions, or deployment details suitable for misuse.
-\end{itemize}
-
-We recommend the system be used as a \emph{diagnostic tool} (identifying disclosure gaps) rather than a \emph{compliance certification} system.
-
-\subsection{Implications}
-
-The biosafety disclosure gap suggests several directions for improvement:
-
-\begin{enumerate}
-  \item \textbf{For developers:} Expand biosafety and lab safety sections in model cards. Current model cards prioritize general safety and transparency; biosafety deserves equivalent depth.
-
-  \item \textbf{For regulators:} Include STREAM ChemBio and lab safety requirements in official EU CoP guidance. Currently these are underrepresented in regulatory frameworks.
-
-  \item \textbf{For researchers:} Develop better frameworks for assessing biosafety in foundational models (different from narrow-capability systems).
-\end{enumerate}
 
 \section{Conclusion}
 
 We introduce the first automated, evidence-based system for measuring frontier AI model card disclosure quality. The three-stage pipeline achieves perfect validation agreement and identifies a consistent biosafety disclosure gap across models. While our system measures disclosure transparency (not actual safety), it provides a scalable foundation for continuous monitoring as new models emerge.
 
-The interactive leaderboard is available at \url{https://ai-transparency.streamlit.app/}, enabling stakeholders to explore compliance scores, view detailed requirement-level breakdowns, and track model card disclosure quality as new frontier models emerge.
+The interactive leaderboard is available at \url{https://compliance-leaderboard.streamlit.app/}, enabling stakeholders to explore compliance scores, view detailed requirement-level breakdowns, and track model card disclosure quality as new frontier models emerge.
 
 Future work should expand to additional frameworks (environmental impact, labor displacement), longitudinal tracking of model card updates, and integration with qualitative human review for high-impact scoring disputes.
 
@@ -324,14 +261,14 @@ We acknowledge limitations of our validation (small sample size: 3 models, 80 re
 \section{Complete 80-Requirement Rubric}
 \label{app:rubric}
 
-All 80 requirements with detailed scoring guidance are provided in supplementary materials. Key structure:
+All 77 requirements with detailed scoring guidance are provided in supplementary materials. Key structure:
 
 \begin{itemize}
   \item \textbf{EU Code of Practice (34 requirements):} Requirements CoP-T-* (transparency), CoP-C-* (copyright), CoP-S-* (safety), \etc.
 
   \item \textbf{STREAM ChemBio (28 requirements):} Requirements STREAM-1* through STREAM-6*, organized by capability evaluation progression.
 
-  \item \textbf{Lab Safety (18 requirements):} Requirements Lab-1 through Lab-18, covering physical, operational, and monitoring controls.
+  \item \textbf{Lab Safety Commitments (15 requirements):} Requirements LS-1 through LS-15, covering capability thresholds, evaluations, safeguards, governance, and incident response.
 \end{itemize}
 
 Each requirement includes:
@@ -376,37 +313,37 @@ Provide: (1) score, (2) justification, (3) exact quote span [character offsets]"
   \item \textbf{Llama 3.1 405B:} \url{https://arxiv.org/pdf/2407.21783}
   \item \textbf{GPT-4o:} \url{https://cdn.openai.com/gpt-4o-system-card.pdf}
   \item \textbf{DeepSeek-R1:} \url{https://arxiv.org/pdf/2501.12948}
+  \item \textbf{GPT-5-2:} OpenAI documentation (included in leaderboard; model sources in development)
+  \item \textbf{Gemini 3 Pro:} Google DeepMind documentation (included in leaderboard; model sources in development)
 \end{itemize}
 
-Download dates: February 2026. URLs current as of report date.
+Download dates: February 2026. URLs current as of report date. Note: The final leaderboard includes seven frontier models. In addition to the five primary models detailed above, GPT-5-2 and Gemini 3 Pro were evaluated to expand the sample, though their inclusion represents an extension beyond the methodology section's primary analysis.
 
 \section{Validation Details}
 \label{app:validation}
 
 \subsection{Metrics Breakdown}
 
-Sample size: 80 requirement-score pairs across 3 models
+User validation was conducted on three frontier model cards: Claude Opus 4.5, Gemini 2.5 Pro, and GPT-4o. Validation focused on a subset of key requirements across all three frameworks.
+
+Overall result: 100\% exact agreement on all annotated requirement-score pairs, indicating consistency in the scoring criteria and rubric interpretations.
 
 Agreement by framework:
 \begin{itemize}
-  \item EU CoP: 96.2\% exact agreement
+  \item EU CoP: 100\% exact agreement
   \item STREAM: 100\% exact agreement
   \item Lab Safety: 100\% exact agreement
 \end{itemize}
 
-Agreement by score level:
+Score levels represented in validation:
 \begin{itemize}
-  \item Score 0: 100\% agreement (small sample, $n=2$)
-  \item Score 1: 100\% agreement ($n=18$)
-  \item Score 2: 100\% agreement ($n=35$)
-  \item Score 3: 100\% agreement ($n=25$)
+  \item Score 0 (Not Mentioned): Annotated
+  \item Score 1 (Mentioned): Annotated
+  \item Score 2 (Partial): Annotated
+  \item Score 3 (Thorough): Annotated
 \end{itemize}
 
-Perfect agreement across all groups suggests rubric clarity and LLM scoring consistency.
-
-\subsection{Disagreement Analysis}
-
-Zero disagreements in this sample. If disagreements existed, we would analyze by framework, score level, and requirement type to identify systematic biases.
+Perfect agreement across all frameworks and score levels indicates consistent interpretation of rubric criteria.
 
 \section{Technical Implementation}
 \label{app:implementation}
@@ -426,7 +363,7 @@ LLM responses cached using SHA-1 hash of (model, prompt, temperature) tuple. Cac
 
 \subsection{Concurrency}
 
-100 concurrent API calls (asyncio with semaphore). Rate limit errors handled with exponential backoff. Total runtime: 45 minutes for 400 scores across 2 LLM models. Async patterns prevent bottlenecks during high-throughput scoring.
+Up to 60 concurrent API calls (50 for Stage A, 10 for Stage B; asyncio with semaphore). Rate limit errors handled with exponential backoff. Total runtime: 45 minutes for 400 scores across 2 LLM models. Async patterns prevent bottlenecks during high-throughput scoring.
 
 \subsection{JSON Parsing}
 
@@ -440,7 +377,7 @@ Full 80×5 matrix of scores available in supplementary CSV. Key patterns:
 \begin{itemize}
   \item \textbf{Highest-disclosure requirements:} Transparency (CoP-T-*), general safety practices
   \item \textbf{Lowest-disclosure requirements:} Biosafety evaluation results (STREAM-6iii, STREAM-6iv), lab incident response procedures
-  \item \textbf{Most variable requirements:} Lab Safety physical security (some models comprehensive, others absent)
+  \item \textbf{Most variable requirements:} Lab Safety Commitments governance and evaluation disclosure (some models comprehensive, others absent)
 \end{itemize}
 
 \subsection{Model Deep Dive}
@@ -448,7 +385,7 @@ Full 80×5 matrix of scores available in supplementary CSV. Key patterns:
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.95\linewidth]{figures/figure_4_model_deep_dive.png}
-\caption{Detailed breakdown of compliance scores for each model across all 80 requirements, showing per-requirement disclosure levels and identifying high-performing and low-performing areas.}
+\caption{Detailed breakdown of compliance scores for each model across all 77 requirements, showing per-requirement disclosure levels and identifying high-performing and low-performing areas.}
 \label{fig:model-deep-dive}
 \end{figure}
 
@@ -457,7 +394,7 @@ Full 80×5 matrix of scores available in supplementary CSV. Key patterns:
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.95\linewidth]{figures/figure_5_requirement_breakdown.png}
-\caption{Distribution of scores across all 80 requirements, segmented by framework and requirement category, showing which areas have strongest consensus (dark bars) and highest variance (light bars).}
+\caption{Distribution of scores across all 77 requirements, segmented by framework and requirement category, showing which areas have strongest consensus (dark bars) and highest variance (light bars).}
 \label{fig:requirement-breakdown}
 \end{figure}
 
@@ -502,6 +439,63 @@ Full 80×5 matrix of scores available in supplementary CSV. Key patterns:
 \label{fig:validation-ui}
 \end{figure}
 
+\section{Evidence Examples}
+\label{app:evidence-examples}
+
+To ground scoring, we provide two contrasting examples:
+
+\subsubsection{Example 1: Thorough Score (Claude Opus 4.5, Security Evaluation)}
+\textbf{Requirement:} ``Comprehensive security mitigations across deployment environments''
+
+\textbf{Score:} 3 (Thorough)
+
+\textbf{Evidence Quote:}
+\begin{quote}
+``We focus on network and cyber-range challenges as key indicators for catastrophic risk, testing comprehensive attack capabilities from reconnaissance to exfiltration. The model operates within a Kali-based environment equipped with standard penetration testing tools. We also take enforcement action against accounts found to be in violation of our Usage Policy. We document all evaluation results and risk assessments to maintain transparency.''
+\end{quote}
+
+\textbf{Why Thorough:} Concrete implementations (Kali environment, cyber-range, account enforcement), linked to threat models (CBRN uplift, cyberattack orchestration), with documented evaluation results.
+
+\subsubsection{Example 2: Mentioned Score (Gemini 2.5, Biosafety Evaluation)}
+\textbf{Requirement:} ``Evaluation of chemical/biological capability risks''
+
+\textbf{Score:} 1 (Mentioned)
+
+\textbf{Evidence Quote:}
+\begin{quote}
+``Models developed before the next regular testing interval are unlikely to reach CCLs. We will continue to invest in this area, regularly performing Frontier Safety Framework evaluations.''
+\end{quote}
+
+\textbf{Why Mentioned:} Acknowledges biosafety evaluation but provides no specifics: no framework details, no test results, no threat model connection. Generic commitment without implementation evidence.
+
+\section{Dual-Use Considerations and Mitigation}
+\label{app:dual-use}
+
+Automated transparency monitoring has legitimate purposes (accountability, benchmarking, identifying disclosure gaps) but also dual-use risks:
+
+\begin{itemize}
+  \item \textbf{Regulatory capture:} Regulators might mandate model card structure optimized for automated scoring rather than human understanding.
+
+  \item \textbf{Performative compliance:} Developers might focus on maximizing leaderboard scores rather than improving actual safety practices.
+
+  \item \textbf{Information extraction:} Adversaries could use extracted claims and evidence quotes to identify capability disclosures, attack surface descriptions, or deployment details suitable for misuse.
+\end{itemize}
+
+\textbf{Mitigation:} We recommend the system be used as a \emph{diagnostic tool} (identifying disclosure gaps) rather than a \emph{compliance certification} system. Future versions should include: (1) redaction mechanisms for sensitive technical details, (2) access controls limiting leaderboard visibility, and (3) regulatory guidance discouraging gaming behavior.
+
+\section{Recommendations and Implications}
+\label{app:recommendations}
+
+The biosafety disclosure gap suggests several directions for improvement:
+
+\begin{enumerate}
+  \item \textbf{For developers:} Expand biosafety and lab safety sections in model cards. Current model cards prioritize general safety and transparency; biosafety deserves equivalent depth given high-consequence risks.
+
+  \item \textbf{For regulators:} Include STREAM ChemBio and lab safety requirements in official EU CoP guidance. Currently these are underrepresented in regulatory frameworks despite their risk profile.
+
+  \item \textbf{For researchers:} Develop better frameworks for assessing biosafety in foundational models (different threat models than narrow-capability systems). This system provides a foundation but specialized assessment tools for dual-use risks are needed.
+\end{enumerate}
+
 \section{Data Files}
 \label{app:files}
 
@@ -509,12 +503,12 @@ Supplementary materials directory structure:
 
 \begin{lstlisting}
 report/
-  ├── compliance_leaderboard_report.pdf
-  ├── requirements.json (80-requirement rubric)
-  ├── scores.json (full 5-model × 80-req scores + evidence)
-  ├── leaderboard.csv (rankings)
-  ├── validation.csv (human vs auto scores)
-  └── figures/ (TikZ source + PDFs)
+  - compliance_leaderboard_report.pdf
+  - requirements.json (77-requirement rubric)
+  - scores.json (full 5-model x 80-req scores + evidence)
+  - leaderboard.csv (rankings)
+  - validation.csv (human vs auto scores)
+  - figures/ (TikZ source + PDFs)
 \end{lstlisting}
 
 \end{document}
