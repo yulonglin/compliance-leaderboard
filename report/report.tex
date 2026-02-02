@@ -151,12 +151,12 @@ Rubric, prompts, and code are available in supplementary materials. LLM caching 
 
 \subsection{Leaderboard Rankings}
 
-Figure~\ref{fig:leaderboard} shows the interactive leaderboard grid displaying all five frontier models scored across three frameworks. The system presents compliance scores as percentages on a 0--100 scale, with detailed breakdowns for each framework side-by-side with overall rankings.
+Figure~\ref{fig:leaderboard} shows the interactive leaderboard grid displaying all seven frontier models scored across three frameworks. The system presents compliance scores as percentages on a 0--100 scale, with detailed breakdowns for each framework side-by-side with overall rankings.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\linewidth]{figures/figure_1_leaderboard_grid.png}
-\caption{Leaderboard interface showing five frontier models with compliance scores across EU Code of Practice, STREAM ChemBio, and Lab Safety Commitments frameworks. Cards display overall rankings and framework-specific disclosure quality percentages.}
+\caption{Leaderboard interface showing seven frontier models with compliance scores across EU Code of Practice, STREAM ChemBio, and Lab Safety Commitments frameworks. Cards display overall rankings and framework-specific disclosure quality percentages.}
 \label{fig:leaderboard}
 \end{figure}
 
@@ -180,7 +180,7 @@ Disclosure quality varies by framework: EU Code of Practice (63.1\%) and STREAM 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\linewidth]{figures/chart_4_biosafety_gap.png}
+\includegraphics[width=0.85\linewidth]{figures/chart_4_framework_gap.png}
 \caption{Framework score differences: STREAM vs EU CoP. Positive values (blue) indicate STREAM leads; negative (red) indicates EU CoP leads. Average gap: 0.4 percentage points (STREAM slightly higher). This represents comparable disclosure across these frameworks, with the larger gap visible in Lab Safety Commitments.}
 \label{fig:biosafety-gap}
 \end{figure}
@@ -191,8 +191,8 @@ Analyzing 400 requirement-score pairs: most disclosures are Partial (32.5\%) or 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\linewidth]{figures/chart_3_disclosure_distribution.png}
-\caption{Distribution of disclosure quality across 400 requirement-score pairs, showing concentration in Partial and Mentioned categories.}
+\includegraphics[width=0.85\linewidth]{figures/chart_3_overall_rankings.png}
+\caption{Overall disclosure quality rankings across seven frontier models, showing Claude Opus 4.5 leading at 80.0\% and substantial variance (42.5 percentage point range).}
 \label{fig:disclosure-distribution}
 \end{figure}
 
@@ -503,12 +503,12 @@ Supplementary materials directory structure:
 
 \begin{lstlisting}
 report/
-  ├── compliance_leaderboard_report.pdf
-  ├── requirements.json (77-requirement rubric)
-  ├── scores.json (full 5-model × 80-req scores + evidence)
-  ├── leaderboard.csv (rankings)
-  ├── validation.csv (human vs auto scores)
-  └── figures/ (TikZ source + PDFs)
+  - compliance_leaderboard_report.pdf
+  - requirements.json (77-requirement rubric)
+  - scores.json (full 5-model x 80-req scores + evidence)
+  - leaderboard.csv (rankings)
+  - validation.csv (human vs auto scores)
+  - figures/ (TikZ source + PDFs)
 \end{lstlisting}
 
 \end{document}
